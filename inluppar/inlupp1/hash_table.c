@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <CUnit/Basic.h>
+#include <stdbool.h>
+
 
 typedef struct entry entry_t;
 
@@ -16,8 +18,6 @@ struct hash_table
 {
   entry_t *buckets[17];
 };
-
-
 
 static entry_t *entry_create(int k, char *value, entry_t *next)
 {
@@ -47,7 +47,7 @@ static entry_t *find_previous_entry_for_key(entry_t *buckets, int key)
 
 while(temp-> next != NULL) // kör så länge du inte står på sista elem i buckets
 {
-  if(temp->next-> key > key) // kollar på elem efter temp och jämnför med key
+  if(temp->next-> key >= key) // kollar på elem efter temp och jämnför med key
   {
     return temp;
   }
@@ -77,10 +77,47 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
     }
 }
 
-char *ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key)
+bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key, char **result) // resultat måste vara ** eftersom att det ska vara en pekare till en string, string  är en pointer så det blir pekare till pekare
 {
-    return NULL;
+  if(key < 0)  
+{
+  key = key + 17;
+  ioopm_hash_table_lookup(ht, key, result);
 }
+  /// Find the previous entry for key
+  entry_t *tmp = find_previous_entry_for_key(ht->buckets[key % 17], key);// vi hittar entry som är innan den vi vill hitta
+  entry_t *next = tmp->next; //sätter next till den vi vill hitta
+
+ if (next && (next->key == key)) // kollar om det existerar alltså inte är NULL och att det är den key:n vi vill hitta
+  {
+    *result = next->value; // om det är den key:n vi är ute efter så sätter vi värdet mappat till key till result
+    return true;
+  }
+else
+  {
+    return false;
+  }
+}
+
+char *call_lookup(ioopm_hash_table_t *ht, int key)
+{
+
+char *result = NULL;
+bool success = ioopm_hash_table_lookup(ht, key, &result);
+if (success)
+  {
+    // success => result was updated
+    printf("key %d maps to %s!\n", key, result);
+  }
+else
+  {
+    // !success => result == NULL
+    printf("key %d does not map to anything!\n", key);
+  }
+
+  return result; // returnerar en sträng, 
+}
+
 
 void entry_destroy(entry_t *entry)
 {
@@ -93,9 +130,9 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) {
   for(int i = 0; i < 17; i++)
   {
     entry_t *current = ht->buckets[i]; // tar in vår array buckets
-    while (current != NULL) //kollar att entryn vi står i    inte är tom
+    while (current != NULL) //kollar att entryn vi står i inte är tom
     {
-      entry_t *temp = current->next; // sätter temp till elemmmm efter current
+      entry_t *temp = current->next; // sätter temp till elem efter current
       entry_destroy(current); // förstör den vi står i
       current = temp;// sätter current till nästa elem
     }
@@ -103,3 +140,6 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) {
   }
 free(ht); // förstör hashtable
 }
+
+
+ 
