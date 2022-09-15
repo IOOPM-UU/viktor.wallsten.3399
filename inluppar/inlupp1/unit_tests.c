@@ -34,9 +34,9 @@ void test_insert_once()
   int k = 0; // make key
   char *value = "bar"; // make value
 
-  CU_ASSERT_NOT_EQUAL(call_lookup(ht, k), "bar");// check if the key is in ht, it should not be, should be true
+  CU_ASSERT_NOT_EQUAL(call_lookup(ht, k), value);// check if the key is in ht, it should not be, should be true
   ioopm_hash_table_insert(ht, k, value); // insert key and value in ht
-  CU_ASSERT_EQUAL(call_lookup(ht, k), "bar"); // check if in ht, should be true
+  CU_ASSERT_EQUAL(call_lookup(ht, k), value); // check if in ht, should be true
 
   ioopm_hash_table_destroy(ht);
 }
@@ -52,6 +52,20 @@ void test_lookup_empty()
      }
    CU_ASSERT_PTR_NULL(call_lookup(ht, -1));
    ioopm_hash_table_destroy(ht);
+}
+
+void test_remove()
+{
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); // skapa hash table
+  int k = 0; // make key
+  char *value = "bar";
+
+  ioopm_hash_table_insert(ht, k, value); // instert i ht
+  CU_ASSERT_EQUAL(call_lookup(ht, k), "bar"); // check that it inserted correct
+  ioopm_hash_table_remove(ht, k); // remove key
+  CU_ASSERT_NOT_EQUAL(call_lookup(ht, k), value); //check that is got removed
+
+  ioopm_hash_table_destroy(ht);
 }
 
 
@@ -95,6 +109,7 @@ int main() {
     (CU_add_test(my_test_suite, "test_create_destroy", test_create_destroy) == NULL) ||
     (CU_add_test(my_test_suite, "test_insert_once", test_insert_once) == NULL) ||
     (CU_add_test(my_test_suite, "test_lookup_empty", test_lookup_empty) == NULL) ||
+    (CU_add_test(my_test_suite, "test_lookup_empty", test_remove) == NULL) ||
     0
   )
     {

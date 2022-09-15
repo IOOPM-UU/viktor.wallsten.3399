@@ -141,5 +141,44 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) {
 free(ht); // förstör hashtable
 }
 
+char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
+{
+if(key < 0)  
+{
+  key = key + 17;
+  ioopm_hash_table_remove(ht, key);
+}
+  char *value = NULL;
+  /// Find the previous entry for key
+  entry_t *tmp = find_previous_entry_for_key(ht->buckets[key % 17], key);// vi hittar entry som är innan den vi vill hitta
+  entry_t *next = tmp->next; //sätter next till den vi vill hitta, next är den vi faktiskt vill ta bort
 
+  if (next && (next->key == key)) // kollar att den existerar och att nästa är den vi vill ta bort
+  {
+    tmp->next = next->next; // sätt pekaren på den innan den vi vill ta bort till pekaren som vi vill ta bort
+    value = next->value; // sätter value till värdet på noden vi vill ta bort
+    free(next); // gör free på den vi vill ta bort
+    return value;
+  }
+  else
+  {
+    printf("key does not exist\n");
+  }
+  
+  return value;
+}
  
+ int main()
+{
+   ioopm_hash_table_t *ht = ioopm_hash_table_create(); // skapa hash table
+  int k = 0; // make key
+  char *value = "bar";
+
+  ioopm_hash_table_insert(ht, k, value);
+  call_lookup(ht, k);
+  ioopm_hash_table_remove(ht, 23);
+  ioopm_hash_table_remove(ht, k);
+  call_lookup(ht, k);
+  return 0;
+
+}
