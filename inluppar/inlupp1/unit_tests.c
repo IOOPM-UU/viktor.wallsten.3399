@@ -14,19 +14,6 @@ void test_create_destroy()
    ioopm_hash_table_destroy(ht);
 }
 
-void test_lookup_miss(void) {
-  ioopm_hash_table_t *ht = ioopm_hash_table_create();
-
-  int key = 0;
-  char *value = "foo";
-  ioopm_hash_table_insert(ht, key, value);
-  ioopm_hash_table_lookup(ht, 1, &value);
-
-
-  CU_ASSERT_PTR_NULL(value);
-
-  ioopm_hash_table_destroy(ht);
-}
 
 void test_insert_once()
 {
@@ -34,9 +21,9 @@ void test_insert_once()
   int k = 0; // make key
   char *value = "bar"; // make value
 
-  CU_ASSERT_NOT_EQUAL(call_lookup(ht, k), value);// check if the key is in ht, it should not be, should be true
+  CU_ASSERT_NOT_EQUAL(ioopm_hash_table_lookup(ht, k).value, value);// check if the key is in ht, it should not be, should be true
   ioopm_hash_table_insert(ht, k, value); // insert key and value in ht
-  CU_ASSERT_EQUAL(call_lookup(ht, k), value); // check if in ht, should be true
+  CU_ASSERT_EQUAL(ioopm_hash_table_lookup(ht, k).value, value); // check if in ht, should be true
 
   ioopm_hash_table_destroy(ht);
 }
@@ -48,9 +35,9 @@ void test_lookup_empty()
    ioopm_hash_table_t *ht = ioopm_hash_table_create();
    for (int i = 0; i < 18; ++i) /// 18 is a bit magical
      {
-       CU_ASSERT_PTR_NULL(call_lookup(ht, i));
+       CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, i).value);
      }
-   CU_ASSERT_PTR_NULL(call_lookup(ht, -1));
+   CU_ASSERT_PTR_NULL(ioopm_hash_table_lookup(ht, -1).value);
    ioopm_hash_table_destroy(ht);
 }
 
@@ -61,9 +48,9 @@ void test_remove()
   char *value = "bar";
 
   ioopm_hash_table_insert(ht, k, value); // instert i ht
-  CU_ASSERT_EQUAL(call_lookup(ht, k), "bar"); // check that it inserted correct
+  CU_ASSERT_EQUAL(ioopm_hash_table_lookup(ht, k).value, "bar"); // check that it inserted correct
   ioopm_hash_table_remove(ht, k); // remove key
-  CU_ASSERT_NOT_EQUAL(call_lookup(ht, k), value); //check that is got removed
+  CU_ASSERT_NOT_EQUAL(ioopm_hash_table_lookup(ht, k).value, value); //check that is got removed
 
   ioopm_hash_table_destroy(ht);
 }

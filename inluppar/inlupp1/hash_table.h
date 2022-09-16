@@ -1,9 +1,6 @@
 #pragma once
 #include <stdbool.h>
-#define Success(v)      (option_t) { .success = true, .value = v };
-#define Failure()       (option_t) { .success = false };
-#define Successful(o)   (o.success == true)
-#define Unsuccessful(o) (o.success == false)
+
 
 /**
  * @file hash_table.h
@@ -45,7 +42,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value);
 /// @param ht hash table operated upon
 /// @param key key to lookup
 /// @return a bool if the key exists in the hash_table
-bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key, char **result);
+option_t ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key);
 
 /// @brief remove any mapping from key to a value
 /// @param ht hash table operated upon
