@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <CUnit/Basic.h>
 #include <stdbool.h>
+#include <string.h>
 #define Success(v)      (option_t) { .success = true, .value = v };
 #define Failure()       (option_t) { .success = false };
 #define Successful(o)   (o.success == true)
@@ -21,6 +22,7 @@ struct entry
 struct hash_table
 {
   entry_t *buckets[No_Buckets];
+  int size;
 };
 
 static entry_t *entry_create(int k, char *value, entry_t *next)
@@ -52,6 +54,7 @@ ioopm_hash_table_t *ioopm_hash_table_create()
     {
     result->buckets[i] = entry_create(0, NULL, NULL);
     }
+  result->size = 0;
   return result;
 }
 
@@ -76,7 +79,7 @@ return temp; //om vi kommer hit står vi längst bak och då ska det nya elem l�
 void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
 {
   /// Calculate the bucket for this entry
-  int bucket = key % No_Buckets;
+  int bucket = find_index(key);
   /// Search for an existing entry for a key
   entry_t *entry = find_previous_entry_for_key(ht->buckets[bucket], key);
   entry_t *next = entry->next;
@@ -89,6 +92,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value)
   else
     {
       entry->next = entry_create(key, value, next);
+      ht->size =+1;
     }
 }
 
@@ -108,6 +112,47 @@ else
   }
 }
 
+int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
+{
+  int *arr_key = calloc(ht->size,sizeof(int));
+  int index = 0;
+
+  for(int i = 0; i < No_Buckets; i ++) // will itterera genom alla våra buckets
+  {
+    entry_t *current = ht->buckets[i]; // ställer oss i den länkade listan på plats i
+
+    while (current != NULL) // kör tills vi kommer sist i länkade listan
+    {
+      entry_t *temp = current->next;
+      arr_key[index] = current->key;
+      current = temp;
+      index++;
+    }
+  }
+return arr_key;
+
+}
+
+char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
+{
+  char **arr_val = calloc(ht->size, sizeof(char *));
+  int index = 0;
+
+  for(int i = 0; i < No_Buckets; i++)
+  {
+    entry_t *current = ht->buckets[i];
+
+    while(current != NULL)
+    {
+      entry_t *temp = current->next;
+      arr_val[index] = current->value;
+      current = temp;
+      index++;
+    }
+  }
+return arr_val;
+}
+
 
 
 void entry_destroy(entry_t *entry)
@@ -115,20 +160,55 @@ void entry_destroy(entry_t *entry)
   free(entry);
 }
 
-
-void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) {
-  
+void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
+{
   for(int i = 0; i < No_Buckets; i++)
   {
     entry_t *current = ht->buckets[i]; // tar in vår array buckets
+  
     while (current != NULL) //kollar att entryn vi står i inte är tom
     {
       entry_t *temp = current->next; // sätter temp till elem efter current
       entry_destroy(current); // förstör den vi står i
       current = temp;// sätter current till nästa elem
     }
-    
   }
+    
+}
+
+bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key)
+{
+  bool success = ioopm_hash_table_lookup(ht, key).success;
+  return success;
+}
+
+bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value)
+{
+  for(int i = 0; i < No_Buckets; i++)
+  {
+    entry_t *current= ht->buckets[i]->next; // behövde hoppas över dummy insert
+    
+
+    while(current != NULL)
+    {
+      if(strcmp(current->value, value) == 0) 
+      {
+        return true;
+      }
+      else
+      {
+        current = current->next;
+        
+      }
+    }
+  }
+  return false;
+}
+
+
+void ioopm_hash_table_destroy(ioopm_hash_table_t *ht) 
+{
+ioopm_hash_table_clear(ht); 
 free(ht); // förstör hashtable
 }
 
@@ -144,6 +224,7 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
     prev_rem->next = rem->next; // sätt pekaren på den innan den vi vill ta bort till pekaren som vi vill ta bort
     value = rem->value; // sätter value till värdet på noden vi vill ta bort
     free(rem); // gör free på den vi vill ta bort
+    ht->size =- 1;
     return value;
   }
   else
@@ -153,19 +234,55 @@ char *ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key)
   
   return value;
 }
+
+int ioopm_hash_table_size(ioopm_hash_table_t *ht)
+  {
+  int storlek = ht->size;
+  return storlek;
+  }
+
+bool ioopm_hash_table_is_empty(ioopm_hash_table_t *ht)
+{
+  return ioopm_hash_table_size(ht) == 0;
+}
+
+
+
  
  /*
  int main()
 {
-   ioopm_hash_table_t *ht = ioopm_hash_table_create(); // skapa hash table
+  ioopm_hash_table_t *ht = ioopm_hash_table_create(); // skapa hash table
   int k = 0; // make key
   char *value = "bar";
 
   ioopm_hash_table_insert(ht, k, value);
-  call_lookup(ht, k);
-  ioopm_hash_table_remove(ht, 23);
-  ioopm_hash_table_remove(ht, k);
-  ioopm_hash_table_lookup(ht, k);
+  if(ioopm_hash_table_has_key(ht,k))
+  {
+    puts("works");
+  }
+  
+  if(ioopm_hash_table_has_key(ht,78))
+  {
+    puts("78");
+  }
+  else{
+    puts("works");
+  }
+
+  if (ioopm_hash_table_has_value(ht, value))
+  {
+    puts("works_s");
+  }
+  if(ioopm_hash_table_has_value(ht, "foo"))
+  {
+    puts("foo");
+  }
+  else {
+    puts("works_s");
+  }
+  
+  ioopm_hash_table_destroy(ht);
   return 0;
 
 }
