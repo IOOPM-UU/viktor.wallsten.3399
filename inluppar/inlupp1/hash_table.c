@@ -223,8 +223,8 @@ int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 //strlen() 
 char **ioopm_hash_table_values(ioopm_hash_table_t *ht)
 {
-  char **values = calloc(ht->size, sizeof(char *));
-  int j = 0;
+char *values[ioopm_hash_table_size(ht)];  
+int j = 0;
   for (int i = 0; i < No_buckets; i++)
   {                   
     entry_t *current =  ht->buckets[i].next;    // we intilize current to the first actual item in the list, the one linked from the dummy
