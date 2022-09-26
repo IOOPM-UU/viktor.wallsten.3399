@@ -1,20 +1,5 @@
 #include "linked_list.h"
-
-
-typedef struct link link_t;
-
-struct link
-{
-    int element;
-    link_t *next;
-};
-
-struct list
-{
-    link_t *first;
-    link_t *last;
-    int size;
-};
+#include "iterator.h"
 
 link_t *link_create(int element, link_t *next)
 {
@@ -80,7 +65,8 @@ link_t *find_link(ioopm_list_t *item, int index) // hittar länken på givet ind
 }
 
 void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
-{
+{   
+    
     if (index < 0 || index > list->size)
     {
         printf("index out of range, insert\n");
@@ -148,9 +134,9 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
 int ioopm_linked_list_get(ioopm_list_t *list, int index)
 {
     
-    if(index < 0 || index > list->size)
+    if(index < 0 || index > list->size)  
     {
-        printf("index out of range,remove\n");
+        printf("index out of range\n");
         return 0;
 
     }
@@ -174,7 +160,7 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
 {
     link_t *current = list->first; // ställer mig i första länken
 
-    while (current != NULL)
+    while (current != NULL) 
     {
     if(current->element == element)
     {
@@ -189,7 +175,7 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
     return false;
 }   
 
-int ioopm_linked_list_size(ioopm_list_t *list)
+int32_t ioopm_linked_list_size(ioopm_list_t *list)
 {
     return list->size;
 }
@@ -209,7 +195,7 @@ bool ioopm_linked_list_is_empty(ioopm_list_t *list)
 void ioopm_linked_list_clear(ioopm_list_t *list)
 {
     link_t *current = list->first; // ställer oss i första elementet
-    while(current != NULL)
+    while(current != NULL) 
     {
         link_t *temp = current; // gör en temp som vi sätter till current
         current = current->next; // sätter current till nästa elem
@@ -228,7 +214,7 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 {
     link_t *current = list->first;
     int index = 0;
-    while (current != NULL)
+    while (current != NULL) 
     {
         if (prop(index, current->element, extra))
         {
@@ -265,4 +251,78 @@ void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function
         fun(index, &current->element, extra);
         current = current->next;
     }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// iterator
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ioopm_list_iterator_t *list_iterator(ioopm_list_t *list)
+{
+  ioopm_list_iterator_t *result = calloc(1, sizeof(ioopm_list_iterator_t));
+
+  result->current = list->first;
+  result->list = list; /// Iterator remembers where it came from
+
+  return result; 
+}
+
+void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
+{
+  iter->current = iter->list->first;
+}
+
+int ioopm_iterator_remove(ioopm_list_iterator_t *iter)
+{
+  link_t *to_remove = iter->current; /// Cache result
+
+  iter->current->next = to_remove->next;  /// Move forward
+  int result = to_remove->element;
+
+  free(to_remove); /// Remove link
+
+  return result;
+}
+
+bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
+{
+ if(iter->current)
+    {
+        return iter->current->next != NULL; 
+    }
+ return false;
+}
+
+bool ioopm_iterator_next(ioopm_list_iterator_t *iter, int *value) // venne om funkar
+{
+    if(ioopm_iterator_has_next(iter))
+    {
+        iter->current = iter->current->next;
+        *value = iter->current->element;
+        return true;
+    }
+   return false; 
+}
+
+int call_ioopm_iterator_next(ioopm_list_iterator_t *iter) // venne om funkar
+{
+    int value = 0;
+    bool sucsess = ioopm_iterator_next(iter, &value);
+
+    if(sucsess)
+    {
+        return value;
+    }
+    printf("Has no next");
+    return 0;
+    
+}
+
+void ioopm_iterator_destroy(ioopm_list_iterator_t *iter)
+{
+  free(iter);
+}
+
+int ioopm_iterator_current(ioopm_list_iterator_t *iter)
+{
+  return iter->current->element; 
 }

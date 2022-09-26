@@ -15,7 +15,7 @@ int clean_suite(void) {
 
 void test_linked_list_create_destroy()
 {
-    ioopm_list_t *list = ioopm_linked_list_create();
+  ioopm_list_t *list = ioopm_linked_list_create();
    CU_ASSERT_PTR_NOT_NULL(list);
    ioopm_linked_list_destroy(list);
 
@@ -27,12 +27,22 @@ void test_insert()
     ioopm_linked_list_insert(list, 0, 5);
     ioopm_linked_list_insert(list,1, 8);
     ioopm_linked_list_insert(list,2, 56);
-    ioopm_linked_list_insert(list,3, 98);
+    ioopm_linked_list_insert(list,1, 98);
     ioopm_linked_list_insert(list,4, 69);
+    ioopm_linked_list_insert(list,-1, 48);
+    
+    int a = ioopm_linked_list_get(list,-1);
+    int b = ioopm_linked_list_get(list, 0);
+    int c = ioopm_linked_list_get(list, 4);
+    int d = ioopm_linked_list_get(list, 1);
+    int e = ioopm_linked_list_get(list, 2);
 
-    CU_ASSERT_EQUAL(ioopm_linked_list_get(list, 0), 5);
-    CU_ASSERT_EQUAL(ioopm_linked_list_get(list, 4), 69);
-    CU_ASSERT_EQUAL(ioopm_linked_list_get(list, 2), 56);
+
+    CU_ASSERT_PTR_NULL(a);
+    CU_ASSERT_EQUAL(b, 5);
+    CU_ASSERT_EQUAL(c, 69);
+    CU_ASSERT_EQUAL(d, 98);
+    CU_ASSERT_EQUAL(e, 8);
 
     ioopm_linked_list_destroy(list);
 

@@ -3,12 +3,36 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdint.h>
 #define No_buckets 17
 
 typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
+typedef struct link link_t;
+typedef struct list ioopm_list_t; 
+
+struct link
+{
+    int element;
+    link_t *next;
+};
+
+struct list
+{
+    link_t *first;
+    link_t *last;
+    int32_t size;
+};
+
+struct iter 
+{
+  link_t *current;
+  ioopm_list_t *list; /// New field
+};
+
 
 typedef bool(*ioopm_int_predicate)(int index,int value, void *extra); // fixa
 typedef void(*ioopm_apply_int_function)(int index, int *value, void *extra); // fixa
+
 
 /// @brief Creates a new empty list
 /// @return an empty linked list
@@ -62,7 +86,7 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, int element);
 /// @brief Lookup the number of elements in the linked list in O(1) time
 /// @param list the linked list
 /// @return the number of elements in the list
-int ioopm_linked_list_size(ioopm_list_t *list);
+int32_t ioopm_linked_list_size(ioopm_list_t *list);
 
 /// @brief Test whether a list is empty or not
 /// @param list the linked list

@@ -1,6 +1,7 @@
 #include "hash_table.h"
 
 
+
 typedef struct entry entry_t;
 
 struct entry
@@ -13,7 +14,7 @@ struct entry
 struct hash_table
 {
   entry_t buckets[No_buckets];
-  int size; //holds the size of the table(number of entrys)
+  int32_t size; //holds the size of the table(number of entrys)
 };
 
 ioopm_hash_table_t *ioopm_hash_table_create()
@@ -174,7 +175,7 @@ char *ioopm_call_remove(ioopm_hash_table_t *ht, int key)
 }
 
 
-int ioopm_hash_table_size(ioopm_hash_table_t *ht)
+int32_t ioopm_hash_table_size(ioopm_hash_table_t *ht)
 {
   return ht->size;
 }
@@ -202,22 +203,21 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
   //ht->size = 0;
 }
 
-int *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
+ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
 {
-  int *keys = calloc(1, sizeof(int[ioopm_hash_table_size(ht)]));
-  int j = 0;
+  ioopm_list_t *keys = ioopm_linked_list_create();
   for (int i = 0; i < No_buckets; i++)
   {                   
     entry_t *current =  ht->buckets[i].next;    // we intilize current to the first actual item in the list, the one linked from the dummy
-    while(current != NULL)                      //while the next is't null we enter the loop
+    while(current != NULL)                      //while the next isn't null we enter the loop
     {
-      keys[j] = current->key;
+      ioopm_linked_list_append(keys, current->key); // append current key to the ll keys
       current = current->next;                  //update current to the next item
-      j++;
+      
     }
   }
 
-  return keys;
+  return keys; // return the ll keys
 }
 
 //strlen() 

@@ -182,28 +182,28 @@ void test_get_keys()
   //4. Call ioopm_hash_table_keys() on the hash table and iterate over the resulting array
     //  4.1. For each key, find the corresponding index of the key in keys and set that index to true in found.
     //  4.2. If you find a key that is not among the original keys, you can register a failed assertion by calling CU_FAIL("Found a key that was never inserted!")
-  int *found_keys = ioopm_hash_table_keys(ht);
+ioopm_list_t *found_keys = ioopm_hash_table_keys(ht);
   //int found_keys[5] = {99, 42, 0, 3, 10};
- for (int i = 0; i < 5; ++i)
+link_t *current = found_keys->first;
+int index = 0;
+while(current != NULL)
   {
    
-   printf("found keys idex %d = %d\n", i, found_keys[i]);
+   printf("found keys idex %d = %d\n", index, current->element);
+   current = current->next;
     
   }
 
+current = found_keys->first;
 
-  for (int i = 0; i < 5; ++i)
+while(current != NULL)
   {
     for (int j = 0; j < 5; ++j)
     {
-      if (found_keys[i] == keys[j])
+      if (current->element == keys[j])
       {
         found[j] = true;
-        j = 4;
-      }
-      else if (j==4)
-      {
-        CU_FAIL("Found a key that was never inserted!");
+        current = current->next;
       }
     }
   }
@@ -213,7 +213,8 @@ void test_get_keys()
   {
     CU_ASSERT_TRUE(found[i]);
   }
-  free(found_keys);
+
+  ioopm_linked_list_destroy(found_keys);
   ioopm_hash_table_destroy(ht);
 }
 
@@ -290,9 +291,9 @@ for (int i = 0; i < 5; ++i)
   //  4.1. For each key k and value v at the same index i, find the corresponding index j of k in keys and assert that v is equal to values[j].
   //  4.2. If you find a key (or value) that is not among the original keys (or values), you can register a failed assertion by calling CU_FAIL("Found a ... that was never inserted!")
 
-  int *found_keys = ioopm_hash_table_keys(ht);
+  ioopm_list_t *found_keys = ioopm_hash_table_keys(ht);
   //int found_keys[5] = {10, 42, 0, 99, 3};
-  
+  link_t *current = found_keys->first;
 
 
 
@@ -300,14 +301,16 @@ for (int i = 0; i < 5; ++i)
   //char *found_values[5] = {"ten", "fortytwo", "zero", "ninetynine", "three"};
 
 
-
+while(current != NULL)
+{
   for (int i = 0; i < 5; ++i)
   {
     for (int j = 0; j < 5; ++j)
   {
-    if(found_keys[i] == keys[j])
+    if(current->element == keys[j])
     {
       CU_ASSERT_TRUE(found_values[i] == values[j])
+      current = current->next;
       j = 4;
     }
     else if (j==4)
@@ -316,10 +319,12 @@ for (int i = 0; i < 5; ++i)
     }
   }
   }
-  free(found_keys);
+}
+  ioopm_linked_list_destroy(found_keys);
   free(found_values);
   ioopm_hash_table_destroy(ht);
 }
+
 
 void test_has_key()
 {
