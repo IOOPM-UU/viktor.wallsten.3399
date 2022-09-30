@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdint.h>
 #include "linked_list.h"
+#include "common.h"
 #define No_buckets 17
 /**
  * @file hash_table.h
@@ -21,13 +22,11 @@
 
 typedef struct hash_table ioopm_hash_table_t;
 
-typedef bool(*ioopm_predicate)(int key, char *value, void *extra);
-typedef void(*ioopm_apply_function)(int key, char **value, void *extra);
 //typedef bool(*ioopm_apply_function)(int key, char *value, void *extra);
 
 /// @brief Create a new hash table
 /// @return A new empty hash table
-ioopm_hash_table_t *ioopm_hash_table_create(void);
+ioopm_hash_table_t *ioopm_hash_table_create(ioopm_eq_function func, ioopm_hash_func hash_function);
 
 /// @brief Delete a hash table and free its memory
 /// @param ht a hash table to be deleted
@@ -37,39 +36,39 @@ void ioopm_hash_table_destroy(ioopm_hash_table_t *ht);
 /// @param ht hash table operated upon
 /// @param key key to insert
 /// @param value value to insert
-void ioopm_hash_table_insert(ioopm_hash_table_t *ht, int key, char *value);
+void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value);
 
 /// @brief lookup value for key in hash table ht
 /// @param ht hash table operated upon
 /// @param key key to lookup
 /// @param result adress of where to store the value mapped to by key 
 /// @return if the lookup was succesful
-bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, int key, char **result);
+bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key, elem_t*result);
 
 /// @brief lookup value for key in hash table ht
 /// @param ht hash table operated upon
 /// @param key key to lookup
 /// @return the value mapped to by key 
-char *ioopm_call_lookup(ioopm_hash_table_t *ht, int key);
+elem_t *ioopm_call_lookup(ioopm_hash_table_t *ht, elem_t key);
 
 /// @brief remove any mapping from key to a value
 /// @param ht hash table operated upon
 /// @param key key to remove
 /// @return the value mapped to by key (FIXME: incomplete)
-bool ioopm_hash_table_remove(ioopm_hash_table_t *ht, int key, char **result);
+bool ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key, elem_t *result);
 
 /// @brief remove value for key in hash table ht
 /// @param ht hash table operated upon
 /// @param key key to lookup
 /// @return if the remove was succesful
-char *ioopm_call_remove(ioopm_hash_table_t *ht, int key);
+elem_t *ioopm_call_remove(ioopm_hash_table_t *ht, elem_t key);
 
 //--------------------ticket2-------------------
 
 /// @brief returns the number of key => value entries in the hash table
 /// @param h hash table operated upon
 /// @return the number of key => value entries in the hash table
-int32_t ioopm_hash_table_size(ioopm_hash_table_t *ht);
+size_t ioopm_hash_table_size(ioopm_hash_table_t *ht);
 
 /// @brief checks if the hash table is empty
 /// @param h hash table operated upon
@@ -88,17 +87,17 @@ ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht);
 /// @brief return the values for all entries in a hash map (in no particular order, but same as ioopm_hash_table_keys)
 /// @param h hash table operated upon
 /// @return an array of values for hash table h which is nullterminated
-char **ioopm_hash_table_values(ioopm_hash_table_t *ht);
+ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht);
 
 /// @brief check if a hash table has an entry with a given key
 /// @param h hash table operated upon
 /// @param key the key sought
-bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, int key);
+bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key);
 
 /// @brief check if a hash table has an entry with a given value
 /// @param h hash table operated upon
 /// @param value the value sought
-bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, char *value);
+bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, elem_t value);
 
 /// @brief check if a predicate is satisfied by all entries in a hash table
 /// @param h hash table operated upon
@@ -119,12 +118,12 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
 
 
-bool key_equiv(int key, char *value_ignored, void *x);
+bool key_equiv(elem_t key, elem_t value_ignored, void *x);
 
-bool value_equiv(int key_ignored, char *value, void *x);
+bool value_equiv(elem_t key_ignored, elem_t value, void *x);
 
-void change_values_str(int key, char **value, void *extra);
+void change_values_str(elem_t key, elem_t *value, void *extra);
 
-bool ioopm_hash_table_all_key_smaller(ioopm_hash_table_t *ht, int key);
+bool ioopm_hash_table_all_key_smaller(ioopm_hash_table_t *ht, elem_t key);
 
-bool ioopm_hash_table_all_value(ioopm_hash_table_t *ht, char *value);
+bool ioopm_hash_table_all_value(ioopm_hash_table_t *ht, elem_t value);

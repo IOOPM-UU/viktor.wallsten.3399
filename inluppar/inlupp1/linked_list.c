@@ -1,7 +1,7 @@
 #include "linked_list.h"
 #include "iterator.h"
 
-link_t *link_create(int element, link_t *next)
+link_t *link_create(elem_t element, link_t *next)
 {
     link_t *new = calloc(1,sizeof(link_t));
     new->element = element;
@@ -9,16 +9,17 @@ link_t *link_create(int element, link_t *next)
     return new;
 }
 
-ioopm_list_t *ioopm_linked_list_create()
+ioopm_list_t *ioopm_linked_list_create(ioopm_eq_function func)
 {
     ioopm_list_t *lista = calloc(1,sizeof(ioopm_list_t)); // allokerar plats för en tom lista
     lista->last = NULL;
-    lista->first =NULL;
+    lista->first = NULL;
     lista->size = 0; // sätter liststorleken till 0
+    lista->func = func;
     return lista;
 }
 
-void ioopm_linked_list_append(ioopm_list_t *list, int value)
+void ioopm_linked_list_append(ioopm_list_t *list, elem_t value)
 {
    
     link_t *newlast = link_create(value, NULL); // gör nya länken
@@ -37,7 +38,7 @@ void ioopm_linked_list_append(ioopm_list_t *list, int value)
 }
     
 
-void ioopm_linked_list_prepend(ioopm_list_t *list, int value)
+void ioopm_linked_list_prepend(ioopm_list_t *list, elem_t value)
 {
     link_t *newfirst = link_create(value, list->first);
     if (list->last == NULL) // om listan är tom så vi oxå flytta om lastpekaren
@@ -64,7 +65,7 @@ link_t *find_link(ioopm_list_t *item, int index) // hittar länken på givet ind
    return current;
 }
 
-void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
+void ioopm_linked_list_insert(ioopm_list_t *list, int index, elem_t value)
 {   
     
     if (index < 0 || index > list->size)
@@ -87,20 +88,20 @@ void ioopm_linked_list_insert(ioopm_list_t *list, int index, int value)
     
 }
 
-int ioopm_linked_list_remove(ioopm_list_t *list, int index)
+elem_t ioopm_linked_list_remove(ioopm_list_t *list, int index)
 {
    
     if(index < 0 || index > list->size)
     {
         printf("index out of range,remove\n");
-        return 0;
+        return bool_elem(false);
 
     }
     if(index == 0) //remove first item
     {   
         link_t *first = list->first;
         link_t *new_first = list->first->next; // pekare till nya första
-        int value = list->first->element;
+        elem_t value = list->first->element;
         list->first = new_first;
         free(first);
         list->size--;
@@ -111,7 +112,7 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
         link_t *newlast = find_link(list, index-1); // hitta elem innan den vi vill ta bort
         link_t *last = list->last;
         list->last = newlast;
-        int value = last->element;
+        elem_t value = last->element;
         free(last);
         list->size--;
         return value;
@@ -121,23 +122,21 @@ int ioopm_linked_list_remove(ioopm_list_t *list, int index)
         link_t *link_before = find_link(list, index-1);
         link_t *link_remove = link_before->next;
         link_t *link_after = link_remove->next;
-        int value = link_remove->element;
+        elem_t value = link_remove->element;
         link_before->next = link_after;
         free(link_remove);
         list->size--;
         return value;
     }
-    
-    
 }
 
-int ioopm_linked_list_get(ioopm_list_t *list, int index)
+elem_t ioopm_linked_list_get(ioopm_list_t *list, int index)
 {
     
     if(index < 0 || index > list->size)  
     {
         printf("index out of range\n");
-        return 0;
+        return bool_elem(false);
 
     }
     if(index == 0) //första elem
@@ -156,13 +155,13 @@ int ioopm_linked_list_get(ioopm_list_t *list, int index)
     
 }
 
-bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
+bool ioopm_linked_list_contains(ioopm_list_t *list, elem_t element)
 {
     link_t *current = list->first; // ställer mig i första länken
 
     while (current != NULL) 
     {
-    if(current->element == element)
+    if(list->func(current->element, element))
     {
         return true;
     }
@@ -175,7 +174,7 @@ bool ioopm_linked_list_contains(ioopm_list_t *list, int element)
     return false;
 }   
 
-int32_t ioopm_linked_list_size(ioopm_list_t *list)
+size_t ioopm_linked_list_size(ioopm_list_t *list)
 {
     return list->size;
 }
@@ -216,7 +215,7 @@ bool ioopm_linked_list_all(ioopm_list_t *list, ioopm_int_predicate prop, void *e
     int index = 0;
     while (current != NULL) 
     {
-        if (prop(index, current->element, extra))
+        if (!(prop(index, current->element, extra)))
         {
             return false;
         }
@@ -250,8 +249,17 @@ void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function
     {
         fun(index, &current->element, extra);
         current = current->next;
+        index++;
     }
 }
+
+void change_elem(int index_not_used, elem_t *value, void *x)
+{
+
+    elem_t new = *(elem_t *)x;
+    *value = new;
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -271,12 +279,12 @@ void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
   iter->current = iter->list->first;
 }
 
-int ioopm_iterator_remove(ioopm_list_iterator_t *iter)
+elem_t ioopm_iterator_remove(ioopm_list_iterator_t *iter)
 {
   link_t *to_remove = iter->current; /// Cache result
 
   iter->current->next = to_remove->next;  /// Move forward
-  int result = to_remove->element;
+  elem_t result = to_remove->element;
 
   free(to_remove); /// Remove link
 
@@ -292,7 +300,7 @@ bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
  return false;
 }
 
-bool ioopm_iterator_next(ioopm_list_iterator_t *iter, int *value) // venne om funkar
+bool ioopm_iterator_next(ioopm_list_iterator_t *iter, elem_t *value) // venne om funkar
 {
     if(ioopm_iterator_has_next(iter))
     {
@@ -303,26 +311,13 @@ bool ioopm_iterator_next(ioopm_list_iterator_t *iter, int *value) // venne om fu
    return false; 
 }
 
-int call_ioopm_iterator_next(ioopm_list_iterator_t *iter) // venne om funkar
-{
-    int value = 0;
-    bool sucsess = ioopm_iterator_next(iter, &value);
-
-    if(sucsess)
-    {
-        return value;
-    }
-    printf("Has no next");
-    return 0;
-    
-}
 
 void ioopm_iterator_destroy(ioopm_list_iterator_t *iter)
 {
   free(iter);
 }
 
-int ioopm_iterator_current(ioopm_list_iterator_t *iter)
+elem_t ioopm_iterator_current(ioopm_list_iterator_t *iter)
 {
   return iter->current->element; 
 }

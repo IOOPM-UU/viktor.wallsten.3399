@@ -15,7 +15,7 @@ int clean_suite(void) {
 
 void test_linked_list_create_destroy()
 {
-  ioopm_list_t *list = ioopm_linked_list_create();
+  ioopm_list_t *list = ioopm_linked_list_create(NULL);
    CU_ASSERT_PTR_NOT_NULL(list);
    ioopm_linked_list_destroy(list);
 
@@ -23,26 +23,19 @@ void test_linked_list_create_destroy()
 
 void test_insert()
 {
-    ioopm_list_t *list = ioopm_linked_list_create();
-    ioopm_linked_list_insert(list, 0, 5);
-    ioopm_linked_list_insert(list,1, 8);
-    ioopm_linked_list_insert(list,2, 56);
-    ioopm_linked_list_insert(list,1, 98);
-    ioopm_linked_list_insert(list,4, 69);
-    ioopm_linked_list_insert(list,-1, 48);
+    ioopm_list_t *list = ioopm_linked_list_create(compare_int);
+    ioopm_linked_list_insert(list, 0, int_elem(5));
+    ioopm_linked_list_insert(list,1, int_elem(8));
+    ioopm_linked_list_insert(list,2, int_elem(56));
+    ioopm_linked_list_insert(list,1, int_elem(98));
+    ioopm_linked_list_insert(list,4, int_elem(69));
+    ioopm_linked_list_insert(list,-1, int_elem(48));
     
-    int a = ioopm_linked_list_get(list,-1);
-    int b = ioopm_linked_list_get(list, 0);
-    int c = ioopm_linked_list_get(list, 4);
-    int d = ioopm_linked_list_get(list, 1);
-    int e = ioopm_linked_list_get(list, 2);
-
-
-    CU_ASSERT_PTR_NULL(a);
-    CU_ASSERT_EQUAL(b, 5);
-    CU_ASSERT_EQUAL(c, 69);
-    CU_ASSERT_EQUAL(d, 98);
-    CU_ASSERT_EQUAL(e, 8);
+    CU_ASSERT_FALSE(ioopm_linked_list_contains(list, int_elem(48)));
+    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(56)));
+    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(98)));
+    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(5)));
+    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(69)));
 
     ioopm_linked_list_destroy(list);
 
@@ -50,46 +43,45 @@ void test_insert()
 
 void test_prepend()
 {
-    ioopm_list_t *list = ioopm_linked_list_create();
-    ioopm_linked_list_prepend(list, 5);
-    ioopm_linked_list_prepend(list, 8);
-    CU_ASSERT_EQUAL(ioopm_linked_list_remove(list, 0), 8);
-    CU_ASSERT_EQUAL(ioopm_linked_list_remove(list, 0), 5);
+    ioopm_list_t *list = ioopm_linked_list_create(NULL);
+    ioopm_linked_list_prepend(list, int_elem(5));
+    CU_ASSERT_EQUAL(1, ioopm_linked_list_size(list));
+    ioopm_linked_list_prepend(list, int_elem(8));
+    CU_ASSERT_EQUAL(2, ioopm_linked_list_size(list));
     ioopm_linked_list_destroy(list);
 }
 
 void test_link_remove()
 {
-    ioopm_list_t *list = ioopm_linked_list_create();
-    ioopm_linked_list_insert(list, 0, 5);
-    ioopm_linked_list_insert(list, 1, 6);
-    ioopm_linked_list_insert(list, 2, 7);
-    ioopm_linked_list_insert(list, 3, 9);
+    ioopm_list_t *list = ioopm_linked_list_create(NULL);
+    ioopm_linked_list_insert(list, 0, int_elem(5));
+    ioopm_linked_list_insert(list, 1, int_elem(6));
+    ioopm_linked_list_insert(list, 2, int_elem(7));
+    ioopm_linked_list_insert(list, 3, int_elem(9));
 
-
-    //ioopm_linked_list_insert(list, -1, 9);
-    CU_ASSERT_EQUAL(ioopm_linked_list_remove(list, 0), 5);
-    CU_ASSERT_EQUAL(ioopm_linked_list_remove(list, 2), 9);
-    CU_ASSERT_EQUAL(ioopm_linked_list_remove(list, 1), 7);
-    CU_ASSERT_EQUAL(ioopm_linked_list_remove(list, 0), 6);
     
-    //CU_ASSERT_NOT_EQUAL(ioopm_linked_list_remove(list, -1), 9);
-
+    ioopm_linked_list_remove(list, 0);
+    ioopm_linked_list_remove(list, 2);
+    ioopm_linked_list_remove(list, 1);
+    ioopm_linked_list_remove(list, 0);
+    
+    CU_ASSERT_TRUE(ioopm_linked_list_is_empty(list));
+  
     free(list);    
 }
 
 void test_lookup()
 {
-    ioopm_list_t *list = ioopm_linked_list_create();
-    CU_ASSERT_FALSE(ioopm_linked_list_contains(list, 6));
+    ioopm_list_t *list = ioopm_linked_list_create(compare_int);
+    CU_ASSERT_FALSE(ioopm_linked_list_contains(list, int_elem(6)));
 
-    ioopm_linked_list_insert(list, 0, 5);
-    ioopm_linked_list_insert(list, 1, 78);
-    ioopm_linked_list_insert(list, 2, 75);
+    ioopm_linked_list_insert(list, 0, int_elem(5));
+    ioopm_linked_list_insert(list, 1, int_elem(78));
+    ioopm_linked_list_insert(list, 2, int_elem(75));
 
-    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, 78));
-    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, 5));
-    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, 75));
+    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(78)));
+    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(5)));
+    CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(75)));
 
 
     ioopm_linked_list_destroy(list);
@@ -97,10 +89,10 @@ void test_lookup()
 
 void test_size()
 {
-    ioopm_list_t *list = ioopm_linked_list_create();
+    ioopm_list_t *list = ioopm_linked_list_create(NULL);
     CU_ASSERT_EQUAL(ioopm_linked_list_size(list), 0);
-    ioopm_linked_list_insert(list, 0, 78);
-    ioopm_linked_list_insert(list, 1, 7);
+    ioopm_linked_list_insert(list, 0, int_elem(78));
+    ioopm_linked_list_insert(list, 1, int_elem(7));
 
     CU_ASSERT_NOT_EQUAL(ioopm_linked_list_size(list), 0);
     CU_ASSERT_EQUAL(ioopm_linked_list_size(list), 2);
@@ -110,10 +102,30 @@ void test_size()
 
 void test_empty()
 {
-  ioopm_list_t *list = ioopm_linked_list_create();
+  ioopm_list_t *list = ioopm_linked_list_create(NULL);
   CU_ASSERT_TRUE(ioopm_linked_list_is_empty(list));
-  ioopm_linked_list_insert(list, 0, 7);
+  ioopm_linked_list_insert(list, 0, int_elem(7));
   CU_ASSERT_FALSE(ioopm_linked_list_is_empty(list));
+
+  ioopm_linked_list_destroy(list);
+}
+
+void apply_to_all_test()
+{
+  ioopm_list_t *list = ioopm_linked_list_create(compare_int);
+  elem_t key = ptr_elem("hejsan");
+  elem_t value = int_elem(2);
+
+  for (int i = 0; i < 5; i++)
+  {
+    ioopm_linked_list_insert(list, i, value);
+  }
+  
+  int *new = 3;
+
+  ioopm_linked_list_apply_to_all(list, change_elem, &new);
+
+  CU_ASSERT_TRUE(ioopm_linked_list_contains(list, int_elem(3)));
 
   ioopm_linked_list_destroy(list);
 }
@@ -146,6 +158,7 @@ int main() {
     (CU_add_test(my_test_suite, "A lookup test\n", test_lookup) == NULL) ||
     (CU_add_test(my_test_suite, "A size test\n", test_size) == NULL) ||
     (CU_add_test(my_test_suite, "A empty test\n", test_empty) == NULL) ||
+    (CU_add_test(my_test_suite, "A apply to all\n", apply_to_all_test) == NULL) ||
     0
   )
     {
