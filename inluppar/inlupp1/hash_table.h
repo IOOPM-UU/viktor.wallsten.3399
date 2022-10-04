@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include "linked_list.h"
 #include "common.h"
-#define No_buckets 17
+
 /**
  * @file hash_table.h
  * @author Anton Rodell, Viktor Wallsten
@@ -45,23 +45,12 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value);
 /// @return if the lookup was succesful
 bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key, elem_t*result);
 
-/// @brief lookup value for key in hash table ht
-/// @param ht hash table operated upon
-/// @param key key to lookup
-/// @return the value mapped to by key 
-elem_t *ioopm_call_lookup(ioopm_hash_table_t *ht, elem_t key);
-
 /// @brief remove any mapping from key to a value
 /// @param ht hash table operated upon
 /// @param key key to remove
-/// @return the value mapped to by key (FIXME: incomplete)
+///@param result adress of where to store the value mapped to by key 
+/// @return a bool if the remove was succesfull or not
 bool ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key, elem_t *result);
-
-/// @brief remove value for key in hash table ht
-/// @param ht hash table operated upon
-/// @param key key to lookup
-/// @return if the remove was succesful
-elem_t *ioopm_call_remove(ioopm_hash_table_t *ht, elem_t key);
 
 //--------------------ticket2-------------------
 
@@ -81,18 +70,23 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht);
 
 /// @brief return the keys for all entries in a hash map (in no particular order, but same as ioopm_hash_table_values)
 /// @param h hash table operated upon
-/// @return an array of keys for hash table h
+/// @return a linked list of keys for hash table h
 ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht);
 
 /// @brief return the values for all entries in a hash map (in no particular order, but same as ioopm_hash_table_keys)
 /// @param h hash table operated upon
-/// @return an array of values for hash table h which is nullterminated
+/// @return a linked list of values for hash table h which is nullterminated
 ioopm_list_t *ioopm_hash_table_values(ioopm_hash_table_t *ht);
 
-/// @brief check if a hash table has an entry with a given key
+/// @brief check if a hash table has an entry with a given int key 
 /// @param h hash table operated upon
 /// @param key the key sought
-bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key);
+bool ioopm_hash_table_has_key_int(ioopm_hash_table_t *ht, elem_t key);
+
+/// @brief check if a hash table has an entry with a given string key 
+/// @param h hash table operated upon
+/// @param key the key sought
+bool ioopm_hash_table_has_key_string(ioopm_hash_table_t *ht, elem_t key);
 
 /// @brief check if a hash table has an entry with a given value
 /// @param h hash table operated upon
@@ -117,13 +111,17 @@ bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *ar
 /// @param arg extra argument to apply_fun
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg);
 
-
-bool key_equiv(elem_t key, elem_t value_ignored, void *x);
-
-bool value_equiv(elem_t key_ignored, elem_t value, void *x);
-
-void change_values_str(elem_t key, elem_t *value, void *extra);
-
+/// @brief checks if all keys in a ht is smaller than a given key
+/// @param ht the hash table operated upon
+/// @param key the given key
+/// @return true if all the keys in the ht are smaller than key
 bool ioopm_hash_table_all_key_smaller(ioopm_hash_table_t *ht, elem_t key);
 
+/// @brief checks if all the values in a hash table is a given value
+/// @param ht the hash table operated upon
+/// @param value the value to compare
+/// @return true if all the values in the hash table is equal to value
 bool ioopm_hash_table_all_value(ioopm_hash_table_t *ht, elem_t value);
+
+
+

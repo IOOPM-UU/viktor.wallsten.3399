@@ -181,14 +181,7 @@ size_t ioopm_linked_list_size(ioopm_list_t *list)
 
 bool ioopm_linked_list_is_empty(ioopm_list_t *list)
 {
-    if(list->size == 0)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return(list->size == 0);
 }
 
 void ioopm_linked_list_clear(ioopm_list_t *list)
@@ -260,11 +253,20 @@ void change_elem(int index_not_used, elem_t *value, void *x)
     *value = new;
 }
 
+bool values_eq_ll(int index_ignored, elem_t value, void *extra)
+{
+  elem_t *other_key_ptr = extra;
+  int other_key = other_key_ptr->i;
+  int comp_key = value.i;
+
+  return (other_key == comp_key);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // iterator
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-ioopm_list_iterator_t *list_iterator(ioopm_list_t *list)
+ioopm_list_iterator_t *ioopm_list_iterator(ioopm_list_t *list)
 {
   ioopm_list_iterator_t *result = calloc(1, sizeof(ioopm_list_iterator_t));
 
@@ -277,18 +279,6 @@ ioopm_list_iterator_t *list_iterator(ioopm_list_t *list)
 void ioopm_iterator_reset(ioopm_list_iterator_t *iter)
 {
   iter->current = iter->list->first;
-}
-
-elem_t ioopm_iterator_remove(ioopm_list_iterator_t *iter)
-{
-  link_t *to_remove = iter->current; /// Cache result
-
-  iter->current->next = to_remove->next;  /// Move forward
-  elem_t result = to_remove->element;
-
-  free(to_remove); /// Remove link
-
-  return result;
 }
 
 bool ioopm_iterator_has_next(ioopm_list_iterator_t *iter)
@@ -308,6 +298,10 @@ bool ioopm_iterator_next(ioopm_list_iterator_t *iter, elem_t *value) // venne om
         *value = iter->current->element;
         return true;
     }
+    else
+    {
+        *value = int_elem(0);
+    }
    return false; 
 }
 
@@ -319,5 +313,6 @@ void ioopm_iterator_destroy(ioopm_list_iterator_t *iter)
 
 elem_t ioopm_iterator_current(ioopm_list_iterator_t *iter)
 {
-  return iter->current->element; 
+    elem_t current = iter->current->element; 
+    return current;
 }

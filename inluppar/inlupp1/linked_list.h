@@ -5,11 +5,9 @@
 #include <string.h>
 #include <stdint.h>
 #include "common.h"
-#define No_buckets 17
 
-typedef struct list ioopm_list_t; /// Meta: struct definition goes in C file
-typedef struct link link_t;
 typedef struct list ioopm_list_t; 
+typedef struct link link_t;
 
 struct link
 {
@@ -32,7 +30,7 @@ struct iter
 };
 
 
-typedef bool(*ioopm_int_predicate)(int index,elem_t value, void *extra); 
+typedef bool(*ioopm_int_predicate)(int index, elem_t value, void *extra); 
 typedef void(*ioopm_apply_int_function)(int index, elem_t *value, void *extra); 
 
 
@@ -121,4 +119,5 @@ bool ioopm_linked_list_any(ioopm_list_t *list, ioopm_int_predicate prop, void *e
 /// @param extra an additional argument (may be NULL) that will be passed to all internal calls of fun
 void ioopm_linked_list_apply_to_all(ioopm_list_t *list, ioopm_apply_int_function fun, void *extra);
 
-void change_elem(int index, elem_t *value, void *x);
+
+

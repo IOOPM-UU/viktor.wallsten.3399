@@ -3,7 +3,7 @@
 
 typedef struct link link_t;
 typedef struct iter ioopm_list_iterator_t;
-typedef struct list ioopm_list_t; 
+
 
 /// @brief Create an iterator for a given list
 /// @param list the list to be iterated over

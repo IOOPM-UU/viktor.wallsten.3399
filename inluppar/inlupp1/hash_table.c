@@ -44,7 +44,7 @@ static entry_t *find_previous_entry_for_key(entry_t *entry, elem_t key, ioopm_ha
 {
   while (entry->next != NULL)
   {
-    if((entry->next->key).i >= key.i)                   //true when our key is smaller or equal to the entry's key
+    if(ht->func(entry->next->key, key))                   //true when our key is smaller or equal to the entry's key
     {
       return entry;                               //return the current entry's key, which is > than the key argument
     }
@@ -76,7 +76,7 @@ void ioopm_hash_table_insert(ioopm_hash_table_t *ht, elem_t key, elem_t value)
   entry_t *next = entry->next;
 
   /// Check if the next entry should be updated or not
-  if (next != NULL && next->key.i == key.i)
+  if (next != NULL && ht->func(next->key, key))
     {
       next->value = value;
     }
@@ -104,30 +104,10 @@ bool ioopm_hash_table_lookup(ioopm_hash_table_t *ht, elem_t key, elem_t *result)
     }
   else
     {
-      // if the entry wasn't found return false
-      return false; 
+      return false; // if the entry wasn't found return false
     }
 }
 
-/*
-elem_t *ioopm_call_lookup(ioopm_hash_table_t *ht, elem_t key)
-{
-  elem_t *result = NULL;
-  bool success = ioopm_hash_table_lookup(ht, key, result);
-  if (success)
-  {
-    // success => result was updated
-    //printf("key %d maps to %s!\n", key, result);
-    return result;
-  }
-  else
-  {
-    // !success => result == NULL
-    printf("key %d does not map to anything!\n", key.i);
-    return NULL;
-  }
-}
-*/
 bool ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key, elem_t *result)
 {
     /// Calculate the bucket for this entry
@@ -150,25 +130,6 @@ bool ioopm_hash_table_remove(ioopm_hash_table_t *ht, elem_t key, elem_t *result)
         return false;
     }
 }
-/*
-elem_t *ioopm_call_remove(ioopm_hash_table_t *ht, elem_t key)
-{
-  elem_t *result = NULL;
-  bool success = ioopm_hash_table_lookup(ht, key, result);
-  if (success)
-  {
-    // success => result was updated
-    printf("key %d maps to %s, and was removed!\n", key.i, (char *) result->p);
-    return result;
-  }
-  else
-  {
-    // !success => result == NULL
-    printf("key %d does not map to anything!\n", key.i);
-    return false;
-  }
-}
-*/
 
 size_t ioopm_hash_table_size(ioopm_hash_table_t *ht)
 {
@@ -193,9 +154,7 @@ void ioopm_hash_table_clear(ioopm_hash_table_t *ht)
       free(temp);                               //free the memory allocated to preivous current(now temp) 
       ht->size -= 1;
     }
-      //current->next = NULL;
   }
-  //ht->size = 0;
 }
 
 ioopm_list_t *ioopm_hash_table_keys(ioopm_hash_table_t *ht)
@@ -232,13 +191,8 @@ ioopm_list_t *values = ioopm_linked_list_create(NULL);
   return values;
 }
 
-void change_values_str(elem_t key, elem_t *value, void *extra)
+ void change_values_str(elem_t key, elem_t *value, void *extra)
 {
-/*
-  int siffra = *((int *)extra);
-  elem_t temp = int_elem(siffra);
-  *value = temp;
-  */
   elem_t *val = extra;
   *value = *val; 
 }
@@ -250,14 +204,18 @@ bool key_equiv(elem_t key, elem_t value_ignored, void *x)
   int other_key = other_key_ptr->i;
   int comp_key = key.i;
 
-  if (other_key == comp_key)
-  {
-    return true;
-  }
-  else 
-  {
-    return false;
-  }
+  return (other_key == comp_key);
+}
+
+
+static bool key_eqiv_string(elem_t a, elem_t ignored_b, void *x)
+{
+  elem_t *other_key_ptr = x;
+  char *other_key = other_key_ptr->p;
+  char *comp_key = a.p;
+
+  return (strcmp(comp_key, other_key)== 0);
+
 }
 
 static bool key_smaller(elem_t key, elem_t value_ignored, void *x)
@@ -269,25 +227,27 @@ static bool key_smaller(elem_t key, elem_t value_ignored, void *x)
 }
 
 
-bool value_equiv(elem_t key_ignored, elem_t value, void *x)
+static bool value_equiv(elem_t key_ignored, elem_t value, void *x)
 {
   elem_t *other_value_ptr = x;
   char *other_value = other_value_ptr->c;
   return (strcmp(value.c, other_value) == 0);
 }
 
-
-bool ioopm_hash_table_has_key(ioopm_hash_table_t *ht, elem_t key)
+bool ioopm_hash_table_has_key_int(ioopm_hash_table_t *ht, elem_t key) ///////////// FEL KAN INTE TA EMOT INT OCH STRING
 {
   return ioopm_hash_table_any(ht, key_equiv, &key);
 }
 
+bool ioopm_hash_table_has_key_string(ioopm_hash_table_t *ht, elem_t key)
+{
+    return ioopm_hash_table_any(ht, key_eqiv_string, &key);
+}
 
 bool ioopm_hash_table_all_key_smaller(ioopm_hash_table_t *ht, elem_t key)
 {
   return ioopm_hash_table_all(ht, key_smaller, &key);
 }
-
 
 bool ioopm_hash_table_has_value(ioopm_hash_table_t *ht, elem_t value)
 {
@@ -299,7 +259,6 @@ bool ioopm_hash_table_all_value(ioopm_hash_table_t *ht, elem_t value)
 {
     return ioopm_hash_table_all(ht, value_equiv, &value);
 }
-
 
 bool ioopm_hash_table_any(ioopm_hash_table_t *ht, ioopm_predicate pred, void *arg)
 {
@@ -338,22 +297,6 @@ bool ioopm_hash_table_all(ioopm_hash_table_t *ht, ioopm_predicate pred, void *x)
     }
     return true;
 }
-/*
-void call_all()
-{
-    return ioopm_hash_table_all(ht, value_equiv, &value);
-
-}
-
-bool key_or_value()
-{
-    return ioopm_hash_table_has_value || ioopm_hash_table_has_key
-}
-    
-*/
-
-//typedef void(*ioopm_apply_function)(int key, char **value, void *extra)
-
 
 void ioopm_hash_table_apply_to_all(ioopm_hash_table_t *ht, ioopm_apply_function apply_fun, void *arg)
 {
