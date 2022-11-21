@@ -1,6 +1,6 @@
 package org.ioopm.calculator.ast;
 
-public class Variable extends Atom{
+public class Variable extends Atom implements Comparable{
     private String c;    
 
     public Variable(String c) {
@@ -25,13 +25,11 @@ public class Variable extends Atom{
         return this.c.equals(other.c);
     }
 
-    public SymbolicExpression eval(Environment vars) {
-        Variable test = new Variable(this.c);
-        if(vars.get(test) != null){
-            return vars.get(test).eval(vars);
-        }
-        return new Variable(this.c);
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+
 
     @Override
     public int hashCode(){
@@ -40,5 +38,15 @@ public class Variable extends Atom{
 
     public boolean isCommand(){
         return true;
+    }
+
+    public String getName(){
+        return this.toString();
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        Variable v = (Variable) o;
+        return (this.c.compareTo(v.c));
     }
 }

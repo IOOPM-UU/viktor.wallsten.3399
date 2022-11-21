@@ -23,13 +23,8 @@ public class Exp extends Unary{
         return super.equals(other);
     }
 
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression arg = this.arg.eval(vars);
-    
-        if (arg.isConstant()) {
-            return new Constant(Math.exp(arg.getValue()));
-        } else {
-            return new Exp(arg);
-        }
-    }    
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
+    }
 }

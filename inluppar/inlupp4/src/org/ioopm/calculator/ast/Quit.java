@@ -8,4 +8,8 @@ public class Quit extends Command{
         return theInstance;
     }
 
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
+    }
 }

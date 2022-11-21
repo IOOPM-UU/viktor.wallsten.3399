@@ -9,8 +9,9 @@ public abstract class Command extends SymbolicExpression{
         return true;
     }
 
+
     @Override
-    public SymbolicExpression eval(Environment vars){
-        throw new RuntimeException("can't eval a command");  
+    public SymbolicExpression accept(Visitor v) {
+        throw new RuntimeException("can't eval a command");
     }
 }

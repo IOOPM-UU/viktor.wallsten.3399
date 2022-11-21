@@ -10,8 +10,9 @@ public class Vars extends Command {
         return theInstance;
     }
 
-    public SymbolicExpression eval(Environment vars){
-        vars.values();
-        return null;
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+
 }

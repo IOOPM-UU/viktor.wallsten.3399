@@ -14,12 +14,9 @@ public class Negation extends Unary{
         return super.toString();
     }
 
-    public SymbolicExpression eval(Environment vars) {
-        SymbolicExpression arg = this.arg.eval(vars);
-            if (arg.isConstant()) {
-                return new Constant((-1) * (arg.getValue()));
-            } else {
-                return new Negation(arg);
-            }
-        }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
+    }
+
 }

@@ -23,16 +23,12 @@ public class Addition extends Binary{
         return super.equals(other);
     }
 
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression argl = this.lhs.eval(vars);
-    SymbolicExpression argr = this.rhs.eval(vars);
-
-    if (argl.isConstant() && argr.isConstant()) {
-            double plus = argl.getValue() + argr.getValue();
-            return new Constant(plus);
-        } 
-        return new Addition(argl, argr);
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+
+
 }
 
 

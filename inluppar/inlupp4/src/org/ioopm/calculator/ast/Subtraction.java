@@ -23,14 +23,9 @@ public class Subtraction extends Binary{
         return super.equals(other);
     }
 
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression argl = this.lhs.eval(vars);
-    SymbolicExpression argr = this.rhs.eval(vars);
-
-    if (argl.isConstant() && argr.isConstant()) {
-            double sub = argl.getValue() - argr.getValue();
-            return new Constant(sub);
-        } 
-        return new Subtraction(argl, argr);
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+
 }

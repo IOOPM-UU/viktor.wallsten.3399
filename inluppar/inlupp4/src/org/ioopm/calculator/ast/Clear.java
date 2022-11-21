@@ -8,8 +8,9 @@ public class Clear extends Command{
         return theInstance;
     }
 
-    public SymbolicExpression eval(Environment vars){
-        vars.clear();
-        return null;
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+        return v.visit(this);
     }
+
 }

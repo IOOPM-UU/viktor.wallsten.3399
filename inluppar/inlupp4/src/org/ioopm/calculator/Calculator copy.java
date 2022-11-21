@@ -14,25 +14,23 @@ public static void main(String[] args) {
 
     final Environment e = new Environment();
 
-
     int enteredExpressions = 0;
     int evaluatedExpressions = 0;
     int fullyEvaluated = 0;
     
+
     while(eventloop){
         System.out.println("Please enter an expression");
         try{
             String input = System.console().readLine();
-            final SymbolicExpression topLevel = p.parse(input, e); 
-            final EvaluationVisitor evaluator = new EvaluationVisitor();
-            final SymbolicExpression result = evaluator.evaluate(topLevel, e);
+            SymbolicExpression result = p.parse(input, e);
             enteredExpressions++;
             if(result instanceof Command){
                 enteredExpressions--;
                 if(result instanceof Quit)
                 {
                     eventloop = false;
-                    System.out.println("Total expresxsions entered: " + enteredExpressions);
+                    System.out.println("Total expressions entered: " + enteredExpressions);
                     System.out.println("Total expressions evaluated: " + evaluatedExpressions);
                     System.out.println("Total expressions fully evaluated: " + fullyEvaluated);
                 }
@@ -43,11 +41,11 @@ public static void main(String[] args) {
                 }
                 else if(result instanceof Vars){
                     System.out.println("All variables and values: ");
-                    System.out.println(e);
+                    e.print();
                 }
             }
             else{
-                SymbolicExpression awnser = evaluator.evaluate(result, e);
+                SymbolicExpression awnser = result.visit(e);
                 System.out.println(awnser);
                 evaluatedExpressions++;
                 if(awnser.isConstant()){

@@ -18,12 +18,9 @@ public class Log extends Unary{
         return super.equals(other);
     }
 
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression arg = this.arg.eval(vars);
-        if (arg.isConstant()) {
-            return new Constant(Math.log(arg.getValue()));
-        } else {
-            return new Log(arg);
-        }
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+
 }

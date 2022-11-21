@@ -23,14 +23,9 @@ public class Multiplication extends Binary{
         return super.equals(other);
     }
 
-    public SymbolicExpression eval(Environment vars) {
-    SymbolicExpression argl = this.lhs.eval(vars);
-    SymbolicExpression argr = this.rhs.eval(vars);
-
-    if (argl.isConstant() && argr.isConstant()) {
-            double mult = argl.getValue() * argr.getValue();
-            return new Constant(mult);
-        } 
-        return new Multiplication(argl, argr);
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
     }
+
 }

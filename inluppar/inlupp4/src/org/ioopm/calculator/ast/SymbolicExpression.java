@@ -31,8 +31,6 @@ public abstract class SymbolicExpression {
     public double getValue(){
         throw new RuntimeException("getValue() called on a non-constant expression");
     }
-
-    public abstract SymbolicExpression eval(Environment e);
     
     public boolean equals(Object other) {
         if (other instanceof Constant) {
@@ -51,4 +49,6 @@ public abstract class SymbolicExpression {
             return false;
         }
     }
+
+    public abstract SymbolicExpression accept(Visitor v);
 }
