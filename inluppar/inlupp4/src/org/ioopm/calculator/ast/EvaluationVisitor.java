@@ -45,13 +45,15 @@ public class EvaluationVisitor implements Visitor {
             return new Subtraction(argl, argr);
         }
 
-    public SymbolicExpression visit(Variable n){
-        if (this.env.containsKey(n)) {
-            return env.get(n);
-        } else {
-            return new Variable(n.toString());
+        public SymbolicExpression visit(Variable n) {
+            if (this.env.containsKey(n)) {
+                return env.get(n);
+            } else if (Constants.namedConstants.containsKey(n.toString())) {
+                return new Constant(Constants.namedConstants.get(n.toString()));
+            } else {
+                return new Variable(n.toString());
+            }
         }
-    }
 
     public SymbolicExpression visit(Sin n){
         SymbolicExpression arg = n.arg.accept(this);

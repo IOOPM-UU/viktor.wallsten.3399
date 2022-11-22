@@ -43,9 +43,5 @@ public class Constant extends Atom{
     public SymbolicExpression accept(Visitor v) {
     return v.visit(this);
     }
-
-    public SymbolicExpression eval(Environment vars){
-        return new Constant (this.value);
-    }
 }
 

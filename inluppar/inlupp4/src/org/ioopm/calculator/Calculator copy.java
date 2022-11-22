@@ -17,7 +17,6 @@ public static void main(String[] args) {
     int enteredExpressions = 0;
     int evaluatedExpressions = 0;
     int fullyEvaluated = 0;
-    
 
     while(eventloop){
         System.out.println("Please enter an expression");
