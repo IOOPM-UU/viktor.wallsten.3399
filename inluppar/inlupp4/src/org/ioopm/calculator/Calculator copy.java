@@ -4,7 +4,7 @@ import org.ioopm.calculator.ast.*;
 import org.ioopm.calculator.parser.*;
 
 
-public class Calculator {
+public class Calculator copy {
 
 public static void main(String[] args) {
 
