@@ -28,6 +28,10 @@ public abstract class SymbolicExpression {
         return false;
     }
 
+    public Boolean isVariable(){
+        return false;
+    }
+
     public double getValue(){
         throw new RuntimeException("getValue() called on a non-constant expression");
     }

@@ -19,6 +19,7 @@ public static void main(String[] args) {
     int fullyEvaluated = 0;
     final NamedConstantChecker checker = new NamedConstantChecker();
     final EvaluationVisitor evaluator = new EvaluationVisitor();
+    final ReassignmentChecker r_checker = new ReassignmentChecker();
 
     while(eventloop){
         System.out.println("Please enter an expression");
@@ -29,6 +30,11 @@ public static void main(String[] args) {
             if (!checker.check(topLevel)) {
                 
             }
+
+            if (!r_checker.check(topLevel)) {
+                System.out.print("shit is working");
+            }
+
             else{
                 final SymbolicExpression result = evaluator.evaluate(topLevel, e);
                 enteredExpressions++;

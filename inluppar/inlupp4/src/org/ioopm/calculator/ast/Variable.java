@@ -49,4 +49,8 @@ public class Variable extends Atom implements Comparable{
         Variable v = (Variable) o;
         return (this.c.compareTo(v.c));
     }
+
+    public Boolean isVariable(){
+        return true;
+    }
 }
