@@ -9,12 +9,12 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class additionTest {
+public class AdditionTest {
     Constant c1 = new Constant(5);
     Constant c2 = new Constant(2);
+    Addition addi = new Addition(c1,c2);
     Variable v = new Variable("x");
     Addition a = new Addition(c1, v);
-    Addition addi = new Addition(c1,c2);
     Sin s = new Sin(new Constant(0));
     Constant zero = new Constant(0);
     Cos c = new Cos(new Constant(0.5));
@@ -49,6 +49,9 @@ public class additionTest {
 
     @Test (expected = RuntimeException.class)
     public void getValueTest(){
+        Constant c1 = new Constant(5);
+        Constant c2 = new Constant(2);
+        Addition addi = new Addition(c1,c2);
         try{
             addi.getValue();
         }
@@ -60,6 +63,9 @@ public class additionTest {
 
     @Test
     public void isConstantTest(){
+        Constant c1 = new Constant(5);
+        Constant c2 = new Constant(2);
+        Addition addi = new Addition(c1,c2);
         assertFalse(addi.isConstant());
     }
 

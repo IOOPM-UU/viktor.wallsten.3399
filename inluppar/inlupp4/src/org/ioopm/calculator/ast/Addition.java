@@ -1,18 +1,17 @@
 package org.ioopm.calculator.ast;
 
 public class Addition extends Binary{
-    double prio;
 
     public Addition(SymbolicExpression rhs, SymbolicExpression lhs){
         super(rhs, lhs);
-        this.prio = 50;
+        prio = 50;
     }
     
     public String getName() {
         return "+";
     }
 
-    public double getPriority() {
+    public int getPriority() {
         return this.prio;
     }
 

@@ -224,6 +224,14 @@ public class CalculatorParser {
             if (this.st.nextToken() != ')') {
                 throw new SyntaxErrorException("expected ')'");
             }
+        }
+        else if(this.st.ttype == '{'){
+            this.st.nextToken();
+            result = assignment();
+            result = new Scope(result);
+            if(this.st.nextToken() != '}'){
+                throw new SyntaxErrorException("expected '}'");
+            }
         } else if (this.st.ttype == NEGATION) {
             result = unary();
         } else if (this.st.ttype == this.st.TT_WORD) {

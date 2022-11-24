@@ -169,5 +169,9 @@ public class EvaluationVisitor implements Visitor {
          return n;
     }
 
+    public SymbolicExpression visit(Scope n){
+        return n;
+    }
+
 }
     

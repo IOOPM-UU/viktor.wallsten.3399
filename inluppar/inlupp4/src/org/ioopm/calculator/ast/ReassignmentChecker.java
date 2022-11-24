@@ -108,5 +108,8 @@ public class ReassignmentChecker implements Visitor{
     public SymbolicExpression visit(Clear n) {
         return n;
     }
-    
+
+    public SymbolicExpression visit(Scope n){
+        return n;
+    }
 }
