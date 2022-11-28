@@ -4,6 +4,7 @@ public class Assignment extends Binary{
 
     public Assignment (SymbolicExpression rhs, SymbolicExpression lhs){
         super(rhs, lhs);
+        prio = 10;
     }
 
     public String getName() {

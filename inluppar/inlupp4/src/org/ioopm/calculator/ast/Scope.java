@@ -1,15 +1,16 @@
 package org.ioopm.calculator.ast;
 
 public class Scope extends SymbolicExpression{
-    private SymbolicExpression n;
+    protected SymbolicExpression arg;
 
     public Scope(SymbolicExpression n){
         super();
-        this.n = n;
+        this.arg = n;
+        prio = 100;
     }
 
     public String toString(){
-       return this.n.toString();
+       return this.arg.toString();
     }
 
     @Override

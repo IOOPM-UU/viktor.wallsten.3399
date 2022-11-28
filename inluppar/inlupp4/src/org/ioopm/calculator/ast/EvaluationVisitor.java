@@ -1,5 +1,11 @@
 package org.ioopm.calculator.ast;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.Stack;
+
 public class EvaluationVisitor implements Visitor {
     private Environment env = null;
 
@@ -170,8 +176,11 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(Scope n){
-        return n;
+       this.env.push();
+       SymbolicExpression arg = n.arg.accept(this);
+       System.out.println(arg);
+       this.env.pop();
+       return arg;
     }
-
 }
     
