@@ -43,10 +43,8 @@ public class Environment extends Stack<HashMap<Variable, SymbolicExpression>> {
 
     public SymbolicExpression get(Variable v){
         Stack<HashMap<Variable, SymbolicExpression>> temp_stack = (Stack<HashMap<Variable, SymbolicExpression>>) this.stack.clone();
-        HashMap<Variable, SymbolicExpression> temp = temp_stack.pop();    
-        System.out.println("get " + temp.get(v));
-        return temp.get(v);
-        /*
+        //HashMap<Variable, SymbolicExpression> temp = temp_stack.pop();    
+        //return temp.get(v);
         for(int i = 0; i < this.stack.size(); i++){
             HashMap<Variable, SymbolicExpression> temp_ht = temp_stack.pop();    
             if(temp_ht.containsKey(v)){
@@ -54,29 +52,28 @@ public class Environment extends Stack<HashMap<Variable, SymbolicExpression>> {
             }
         }
         return v;
-        */
+        
     }
 
     public void put(Variable v, SymbolicExpression e){
         HashMap<Variable, SymbolicExpression> temp_hash = this.stack.pop();
         temp_hash.put(v,e);
-        System.out.println("put " + temp_hash.put(v,e));
         this.stack.push(temp_hash);
     }
 
     public Boolean containsKey(SymbolicExpression key){
         Stack<HashMap<Variable, SymbolicExpression>> temp_stack = (Stack<HashMap<Variable, SymbolicExpression>>) this.stack.clone();
-        HashMap<Variable, SymbolicExpression> temp_ht = temp_stack.pop();    
-        return temp_ht.containsKey(key);
-      /*  for(int i = 0; i < this.stack.size(); i++){
+        //HashMap<Variable, SymbolicExpression> temp_ht = temp_stack.pop();    
+        //return temp_ht.containsKey(key);
+        for(int i = 0; i < this.stack.size(); i++){
             HashMap<Variable, SymbolicExpression> temp_ht = temp_stack.pop();    
             if(temp_ht.containsKey(key)){
-                temp_stack.push(temp_ht)
+                //temp_stack.push(temp_ht);
                 return true;
             }
         }
         return false;
-        */
+        
     }
 
     public void push(){

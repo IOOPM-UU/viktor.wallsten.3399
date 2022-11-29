@@ -142,15 +142,11 @@ public class EvaluationVisitor implements Visitor {
     
     public SymbolicExpression visit(Assignment n){
         SymbolicExpression argl = n.lhs.accept(this);
-        SymbolicExpression argr = n.rhs.accept(this);
+        SymbolicExpression argr = n.rhs;
       
         if (Constants.namedConstants.containsKey(n.rhs.toString()))
         {
             throw new IllegalExpressionException("Error: cannot redefine a named constant.");
-        }
-        else if (env.containsKey(n.rhs))
-        {
-            throw new IllegalExpressionException("Error: cannot redefine an already assigned variable.");
         }
         else if (argr instanceof Variable){
             
@@ -178,7 +174,6 @@ public class EvaluationVisitor implements Visitor {
     public SymbolicExpression visit(Scope n){
        this.env.push();
        SymbolicExpression arg = n.arg.accept(this);
-       System.out.println(arg);
        this.env.pop();
        return arg;
     }
