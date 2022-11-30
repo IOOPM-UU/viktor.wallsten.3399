@@ -110,4 +110,22 @@ public class NamedConstantChecker implements Visitor {
         return n;
     }
 
+    public SymbolicExpression visit(Greaterthan n){   
+        return n;
+    }
+    public SymbolicExpression visit(GreaterthanEquals n){        
+        return n;
+    }
+    public SymbolicExpression visit(Lessthan n){       
+        return n;
+    }
+    public SymbolicExpression visit (Lessthanequals n){     
+        return n;
+    }
+    public SymbolicExpression visit (Eq n){
+        return n;
+    }
+    public SymbolicExpression visit(Conditonal n){
+        return n;
+    }
 }

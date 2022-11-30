@@ -23,7 +23,7 @@ public class test {
             System.out.println("Error: expected '" + expected + "' but got '" + r + "'");
         }
     }
-
+/* 
     public static void main(String[] args) {
         Constant c1 = new Constant(5);
         Constant c2 = new Constant(2);
@@ -78,4 +78,5 @@ public class test {
         testEvaluating(y, x);
         System.out.println("x = " + x.hashCode() + "\ny = " + y.hashCode());
     }
+    */
 }

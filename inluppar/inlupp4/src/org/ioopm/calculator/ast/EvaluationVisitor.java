@@ -151,6 +151,7 @@ public class EvaluationVisitor implements Visitor {
         else if (argr instanceof Variable){
             
             env.put((Variable)(argr), argl);
+            
 
             if (argl.isConstant()){
                 return new Constant(argl.getValue());
@@ -176,6 +177,32 @@ public class EvaluationVisitor implements Visitor {
        SymbolicExpression arg = n.arg.accept(this);
        this.env.pop();
        return arg;
+    }
+
+    public SymbolicExpression visit (GreaterthanEquals n){
+   //if (n.lhs.accept(this).getValue() >= n.rhs.accept(this).getvalue()){
+
+    return n;
+        
+    }
+    public SymbolicExpression visit(Eq n){
+        return n;
+    }
+
+    public SymbolicExpression visit(Lessthanequals n){
+        return n;
+    }
+
+    public SymbolicExpression visit(Lessthan n){
+        return n;
+    }
+    
+    public SymbolicExpression visit(Greaterthan n){
+        return n;
+    }
+
+    public SymbolicExpression visit(Conditonal n){
+        return n;
     }
 }
     

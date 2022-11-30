@@ -2,6 +2,8 @@ package org.ioopm.calculator.ast;
 
 import java.util.ArrayList;
 
+import javax.naming.spi.DirStateFactory.Result;
+
 public class ReassignmentChecker implements Visitor{
     private ArrayList<String> l_e = new ArrayList<>();
  
@@ -110,6 +112,25 @@ public class ReassignmentChecker implements Visitor{
     }
 
     public SymbolicExpression visit(Scope n){
+        return n;
+    }
+
+    public SymbolicExpression visit(Greaterthan n){   
+        return n;
+    }
+    public SymbolicExpression visit(GreaterthanEquals n){        
+        return n;
+    }
+    public SymbolicExpression visit(Lessthan n){       
+        return n;
+    }
+    public SymbolicExpression visit (Lessthanequals n){     
+        return n;
+    }
+    public SymbolicExpression visit (Eq n){
+        return n;
+    }
+    public SymbolicExpression visit(Conditonal n){
         return n;
     }
 }

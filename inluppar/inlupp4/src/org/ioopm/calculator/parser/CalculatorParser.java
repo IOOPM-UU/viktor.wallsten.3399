@@ -4,6 +4,7 @@ import org.ioopm.calculator.ast.*;
 
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.sql.SQLSyntaxErrorException;
 import java.io.IOException;
 
 import java.util.*;
@@ -24,7 +25,13 @@ public class CalculatorParser {
     private static String COS = "Cos";
     private static String LOG = "Log";
     private static String EXP = "Exp";
+    private static String IF = "if";
     private static char ASSIGNMENT = '=';
+    private static String GREATERTHANEQUALS = ">=";
+    private static String LESSTHANEQUALS = "<=";
+    private static char GREATERTHAN = '>';
+    private static char LESSTHAN = '<';
+    private static String EQ = "==";
 
     // unallowerdVars is used to check if variabel name that we
     // want to assign new meaning to is a valid name eg 3 = Quit
@@ -35,7 +42,9 @@ public class CalculatorParser {
         "Cos",
         "Exp",
         "Log",
-        "Clear"));
+        "Clear",
+        "if",
+        "else"));
 
     /**
      * Used to parse the inputted string by the Calculator program
@@ -164,14 +173,43 @@ public class CalculatorParser {
      */
     private SymbolicExpression expression() throws IOException {
         SymbolicExpression result = term();
-        this.st.nextToken();
-        while (this.st.ttype == ADDITION || this.st.ttype == SUBTRACTION) {
+        this.st.nextToken(); // || this.st.ttype == ASSIGNMENT
+        while (this.st.ttype == ADDITION || this.st.ttype == SUBTRACTION || this.st.ttype == GREATERTHAN || this.st.ttype == LESSTHAN) {
             int operation = st.ttype;
             this.st.nextToken();
             if (operation == ADDITION) {
                 result = new Addition(result, term());
-            } else {
+            } else  if (operation == SUBTRACTION){
                 result = new Subtraction(result, term());
+            } else if(operation == GREATERTHAN){
+                operation = this.st.ttype;
+                this.st.pushBack();
+                this.st.nextToken();
+                if(this.st.ttype == ASSIGNMENT){
+                    System.out.println("gte");
+                    this.st.nextToken();
+                    new GreaterthanEquals(result, term());
+                }
+                else{
+                    System.out.println("gt");
+                    new Greaterthan(result, term());
+                }
+            } else if(operation == LESSTHAN){
+                operation = this.st.ttype;
+                this.st.pushBack();
+                this.st.nextToken();
+                if(this.st.ttype == ASSIGNMENT){
+                    System.out.println("lte");
+                    this.st.nextToken();
+                    new Lessthanequals(result, term());
+                }
+                else{
+                    System.out.println("lt");
+                    new Lessthan(result, term());
+                }
+            }else{
+                System.out.println("eq");
+                new Eq(result, term());
             }
             this.st.nextToken();
         }
@@ -239,6 +277,7 @@ public class CalculatorParser {
                 st.sval.equals(COS) ||
                 st.sval.equals(EXP) ||
                 st.sval.equals(NEG) ||
+                st.sval.equals(IF) ||
                 st.sval.equals(LOG)) {
 
                 result = unary();
@@ -271,8 +310,25 @@ public class CalculatorParser {
             result = new Cos(primary());
         } else if (operation.equals(LOG)) {
             result = new Log(primary());
-        } else {
+        } else if(operation.equals(EXP)) {
             result = new Exp(primary());
+        }
+        else{
+            System.out.println("test1");
+            //this.st.nextToken();
+            SymbolicExpression arg = assignment();
+            System.out.println("test2");
+            this.st.nextToken();
+            SymbolicExpression s1 = primary();
+            System.out.println("test3");
+            this.st.nextToken();
+            if(!this.st.sval.equals("else")){
+                throw new SyntaxErrorException("Must be else");
+            }
+            this.st.nextToken();
+            SymbolicExpression s2 = primary();
+            System.out.println("test4");
+            result = new Conditonal(arg,s1,s2);
         }
         return result;
     }
