@@ -128,9 +128,12 @@ public class CalculatorParser {
             this.st.nextToken();
             if (this.st.ttype == this.st.TT_NUMBER) {
                 throw new SyntaxErrorException("Error: Numbers cannot be used as a variable name");
-            } else if (this.st.ttype != this.st.TT_WORD) {
+            } else if (this.st.ttype != this.st.TT_WORD && this.st.ttype != '=') {
                 throw new SyntaxErrorException("Error: Not a valid assignment of a variable"); //this handles faulty inputs after the equal sign eg. 1 = (x etc
-            } else {
+            } else if (this.st.ttype == '=') {
+                this.st.nextToken();
+                result = new Eq(result, term());
+            }else {
                 if (this.st.sval.equals("ans")) {
                     throw new SyntaxErrorException("Error: ans cannot be redefined");
                 }

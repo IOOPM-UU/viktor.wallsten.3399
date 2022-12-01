@@ -1,7 +1,7 @@
 package org.ioopm.calculator.ast;
 
 public class SysBool extends Atom {
-    private boolean value;
+    private Boolean value;
 
     public SysBool(Boolean value){
         this.value = value;
@@ -22,6 +22,11 @@ public class SysBool extends Atom {
     @Override
     public boolean getBool(){
         return this.value;
+    }
+
+    @Override
+    public String toString(){
+        return this.value.toString();
     }
 
     @Override
