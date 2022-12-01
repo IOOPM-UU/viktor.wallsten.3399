@@ -198,10 +198,12 @@ public class EvaluationVisitor implements Visitor {
     }
     
     public SymbolicExpression visit(Greaterthan n){
+        System.out.println("visitor");
         return n;
     }
 
     public SymbolicExpression visit(Conditonal n){
+        System.out.println("conditional");
         return n;
     }
 }

@@ -4,7 +4,7 @@ public class Lessthanequals extends Binary {
     
     public Lessthanequals(SymbolicExpression rhs, SymbolicExpression lhs){
         super(rhs,lhs);
-        prio = 30; 
+        prio = 50; 
     }
 
     public String getName() {
@@ -14,7 +14,19 @@ public class Lessthanequals extends Binary {
     public int getPriority() {
         return this.prio;
     }
+    public String toString(){
+        return super.toString();
+    }
 
+    public boolean equals(Object other) {
+        return super.equals(other);
+    }
+
+    @Override
+    public SymbolicExpression accept(Visitor v) {
+    return v.visit(this);
+    }
+    /* 
     public boolean equals(Object other){
         if (other instanceof Lessthanequals){
             Lessthanequals gt = (Lessthanequals) other;
@@ -26,9 +38,5 @@ public class Lessthanequals extends Binary {
        public boolean equals(Lessthanequals gt){
         return this.lhs.equals(gt.lhs) && this.rhs.equals(gt.rhs);
        }
-
-    @Override
-    public SymbolicExpression accept(Visitor v) {
-    return v.visit(this);
-    }
+*/
 }

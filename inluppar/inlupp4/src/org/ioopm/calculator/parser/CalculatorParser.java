@@ -188,11 +188,11 @@ public class CalculatorParser {
                 if(this.st.ttype == ASSIGNMENT){
                     System.out.println("gte");
                     this.st.nextToken();
-                    new GreaterthanEquals(result, term());
+                    result = new GreaterthanEquals(result, term());
                 }
                 else{
                     System.out.println("gt");
-                    new Greaterthan(result, term());
+                    result = new Greaterthan(result, term());
                 }
             } else if(operation == LESSTHAN){
                 operation = this.st.ttype;
@@ -201,15 +201,15 @@ public class CalculatorParser {
                 if(this.st.ttype == ASSIGNMENT){
                     System.out.println("lte");
                     this.st.nextToken();
-                    new Lessthanequals(result, term());
+                    result = new Lessthanequals(result, term());
                 }
                 else{
                     System.out.println("lt");
-                    new Lessthan(result, term());
+                    result = new Lessthan(result, term());
                 }
             }else{
                 System.out.println("eq");
-                new Eq(result, term());
+                result = new Eq(result, term());
             }
             this.st.nextToken();
         }
