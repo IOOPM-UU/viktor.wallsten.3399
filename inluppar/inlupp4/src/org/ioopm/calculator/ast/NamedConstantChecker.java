@@ -128,4 +128,7 @@ public class NamedConstantChecker implements Visitor {
     public SymbolicExpression visit(Conditonal n){
         return n;
     }
+    public SymbolicExpression visit(SysBool n){
+        return n;
+    }
 }

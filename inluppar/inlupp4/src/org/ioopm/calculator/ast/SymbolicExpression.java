@@ -32,6 +32,10 @@ public abstract class SymbolicExpression {
         return false;
     }
 
+    public boolean getBool(){
+        return false;
+    }
+
     public double getValue(){
         throw new RuntimeException("getValue() called on a non-constant expression");
     }

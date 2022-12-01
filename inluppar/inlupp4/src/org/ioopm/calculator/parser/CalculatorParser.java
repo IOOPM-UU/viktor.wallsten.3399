@@ -186,12 +186,10 @@ public class CalculatorParser {
                 this.st.pushBack();
                 this.st.nextToken();
                 if(this.st.ttype == ASSIGNMENT){
-                    System.out.println("gte");
                     this.st.nextToken();
                     result = new GreaterthanEquals(result, term());
                 }
                 else{
-                    System.out.println("gt");
                     result = new Greaterthan(result, term());
                 }
             } else if(operation == LESSTHAN){
@@ -199,16 +197,13 @@ public class CalculatorParser {
                 this.st.pushBack();
                 this.st.nextToken();
                 if(this.st.ttype == ASSIGNMENT){
-                    System.out.println("lte");
                     this.st.nextToken();
                     result = new Lessthanequals(result, term());
                 }
                 else{
-                    System.out.println("lt");
                     result = new Lessthan(result, term());
                 }
             }else{
-                System.out.println("eq");
                 result = new Eq(result, term());
             }
             this.st.nextToken();
@@ -314,20 +309,16 @@ public class CalculatorParser {
             result = new Exp(primary());
         }
         else{
-            System.out.println("test1");
             //this.st.nextToken();
             SymbolicExpression arg = assignment();
-            System.out.println("test2");
             this.st.nextToken();
             SymbolicExpression s1 = primary();
-            System.out.println("test3");
             this.st.nextToken();
             if(!this.st.sval.equals("else")){
                 throw new SyntaxErrorException("Must be else");
             }
             this.st.nextToken();
             SymbolicExpression s2 = primary();
-            System.out.println("test4");
             result = new Conditonal(arg,s1,s2);
         }
         return result;

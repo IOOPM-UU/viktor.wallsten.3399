@@ -180,30 +180,49 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit (GreaterthanEquals n){
-   //if (n.lhs.accept(this).getValue() >= n.rhs.accept(this).getvalue()){
-
-    return n;
-        
+        if (n.lhs.accept(this).getValue() >= n.rhs.accept(this).getValue()){
+            return new SysBool(true);
+        }
+        return new SysBool(false);     
     }
     public SymbolicExpression visit(Eq n){
-        return n;
+        if (n.lhs.accept(this).getValue() == n.rhs.accept(this).getValue()){
+            return new SysBool(true);
+        }
+        return new SysBool(false);  
     }
 
     public SymbolicExpression visit(Lessthanequals n){
-        return n;
-    }
-
-    public SymbolicExpression visit(Lessthan n){
-        return n;
+        if (n.lhs.accept(this).getValue() <= n.rhs.accept(this).getValue()){
+            return new SysBool(true);
+        }
+        return new SysBool(false);     
     }
     
+
+    public SymbolicExpression visit(Lessthan n){
+        if (n.lhs.accept(this).getValue() < n.rhs.accept(this).getValue()){
+            return new SysBool(true);
+        }
+        return new SysBool(false);     
+    }
+    
+    
     public SymbolicExpression visit(Greaterthan n){
-        System.out.println("visitor");
-        return n;
+        if (n.lhs.accept(this).getValue() > n.rhs.accept(this).getValue()){
+            return new SysBool(true);
+        }
+        return new SysBool(false);     
     }
 
     public SymbolicExpression visit(Conditonal n){
-        System.out.println("conditional");
+        if(n.arg.accept(this).getBool()){
+            return n.s1.accept(this);
+        }
+        return n.s2.accept(this);
+    }
+
+    public SymbolicExpression visit(SysBool n){
         return n;
     }
 }

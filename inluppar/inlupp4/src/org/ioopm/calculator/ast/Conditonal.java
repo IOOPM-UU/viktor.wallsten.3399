@@ -7,9 +7,6 @@ public class Conditonal extends SymbolicExpression {
 
     public Conditonal(SymbolicExpression arg, SymbolicExpression s1, SymbolicExpression s2){
         super();
-        System.out.println(arg);
-        System.out.println(s1);
-        System.out.println(s2);
         if ( arg instanceof Greaterthan || arg instanceof GreaterthanEquals || arg instanceof Lessthan || arg instanceof Lessthanequals || arg instanceof Eq){
             this.arg = arg;
             if(s1 instanceof Scope || s2 instanceof Scope){
@@ -22,6 +19,11 @@ public class Conditonal extends SymbolicExpression {
         else{
             throw new IllegalExpressionException("Only if statments are allowed");
         }
+    }
+
+    @Override
+    public String toString(){
+        return this.arg.toString();
     }
 
     @Override

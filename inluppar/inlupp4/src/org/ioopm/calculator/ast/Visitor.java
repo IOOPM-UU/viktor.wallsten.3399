@@ -23,4 +23,5 @@ public interface Visitor {
     public SymbolicExpression visit (Lessthanequals n);
     public SymbolicExpression visit (Eq n);
     public SymbolicExpression visit (Conditonal n);
+    public SymbolicExpression visit (SysBool n);
 }
