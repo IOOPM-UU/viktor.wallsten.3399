@@ -25,6 +25,14 @@ public class CalculatorParser {
     private static String LOG = "Log";
     private static String EXP = "Exp";
     private static char ASSIGNMENT = '=';
+<<<<<<< Updated upstream
+=======
+    // private static String GREATERTHANEQUALS = ">=";
+    // private static String LESSTHANEQUALS = "<=";
+    // private static char GREATERTHAN = '>';
+    // private static char LESSTHAN = '<';
+    // private static String EQ = "==";
+>>>>>>> Stashed changes
 
     // unallowerdVars is used to check if variabel name that we
     // want to assign new meaning to is a valid name eg 3 = Quit
@@ -134,6 +142,7 @@ public class CalculatorParser {
         return result;
     }
 
+
     /**
      * Check if valid identifier for variable and return that if so
      * @return a SymbolicExpression that is either a named constant or a new variable
@@ -164,17 +173,56 @@ public class CalculatorParser {
      */
     private SymbolicExpression expression() throws IOException {
         SymbolicExpression result = term();
+<<<<<<< Updated upstream
         this.st.nextToken();
         while (this.st.ttype == ADDITION || this.st.ttype == SUBTRACTION) {
+=======
+        this.st.nextToken(); // || this.st.ttype == ASSIGNMENT
+        while (this.st.ttype == ADDITION || this.st.ttype == SUBTRACTION){ // || this.st.ttype == GREATERTHAN || this.st.ttype == LESSTHAN) {
+>>>>>>> Stashed changes
             int operation = st.ttype;
             this.st.nextToken();
             if (operation == ADDITION) {
                 result = new Addition(result, term());
             } else {
+<<<<<<< Updated upstream
                 result = new Subtraction(result, term());
+=======
+                result = new Subtraction(result, term());}
+        //     } else if(operation == GREATERTHAN){
+        //         operation = this.st.ttype;
+        //         this.st.pushBack();
+        //         this.st.nextToken();
+        //         if(this.st.ttype == ASSIGNMENT){
+        //             System.out.println("gte");
+        //             this.st.nextToken();
+        //             result = new GreaterthanEquals(result, term());
+        //         }
+        //         else{
+        //             System.out.println("gt");
+        //             result = new Greaterthan(result, term());
+        //         }
+        //     } else if(operation == LESSTHAN){
+        //         operation = this.st.ttype;
+        //         this.st.pushBack();
+        //         this.st.nextToken();
+        //         if(this.st.ttype == ASSIGNMENT){
+        //             System.out.println("lte");
+        //             this.st.nextToken();
+        //             result = new Lessthanequals(result, term());
+        //         }
+        //         else{
+        //             System.out.println("lt");
+        //             result = new Lessthan(result, term());
+        //         }
+        //     }else{
+        //         System.out.println("eq");
+        //         result = new Eq(result, term());
+        //     }
+        //     this.st.nextToken();
+        // }
+>>>>>>> Stashed changes
             }
-            this.st.nextToken();
-        }
         this.st.pushBack();
         return result;
     }
@@ -232,7 +280,43 @@ public class CalculatorParser {
             if(this.st.nextToken() != '}'){
                 throw new SyntaxErrorException("expected '}'");
             }
-        } else if (this.st.ttype == NEGATION) {
+        } else if (st.sval.equals(IF)){
+            //this.st.nextToken();
+            SymbolicExpression arg1 = assignment();
+            this.st.nextToken();
+            if (this.st.ttype == '>'){
+                this.st.pushBack();
+                this.st.nextToken();
+                if(this.st.ttype == '='){
+                    SymbolicExpression arg2 = assignment();
+                    this.st.nextToken();
+                    SymbolicExpression s1 = primary();
+                    this.st.nextToken();
+                    if (!this.st.sval.equals("else")){
+                        throw new SyntaxErrorException("Must be else");
+                    }
+                    SymbolicExpression s2 = primary();
+                    SymbolicExpression tempresult = new GreaterthanEquals(arg1, arg2);
+                    result = new Conditonal(tempresult, s1, s2);
+                } else {
+                    SymbolicExpression arg2 = assignment();
+                    this.st.nextToken();
+                    SymbolicExpression s1 = primary();
+                    this.st.nextToken();
+                    if (!this.st.sval.equals("else")){
+                        throw new SyntaxErrorException("Must be else");
+                    }
+                    SymbolicExpression s2 = primary();
+                    SymbolicExpression tempresult = new Greaterthan(arg1, arg2);
+                    result = new Conditonal(tempresult, s1, s2);
+                }
+            } else {
+                result = expression();
+            }
+    
+
+        } 
+        else if (this.st.ttype == NEGATION) {
             result = unary();
         } else if (this.st.ttype == this.st.TT_WORD) {
             if (st.sval.equals(SIN) ||
@@ -274,6 +358,22 @@ public class CalculatorParser {
         } else {
             result = new Exp(primary());
         }
+<<<<<<< Updated upstream
+=======
+        else{
+            SymbolicExpression arg = assignment();
+            this.st.nextToken();
+            SymbolicExpression s1 = primary();
+            this.st.nextToken();
+            if(!this.st.sval.equals("else")){
+                throw new SyntaxErrorException("Must be else");
+            }
+            this.st.nextToken();
+            SymbolicExpression s2 = primary();
+            result = new Conditonal(arg,s1,s2);
+            }
+        
+>>>>>>> Stashed changes
         return result;
     }
 
