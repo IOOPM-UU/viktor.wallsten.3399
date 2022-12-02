@@ -30,7 +30,10 @@ public static void main(String[] args) {
             if (!checker.check(topLevel)) {
                 
             }
-
+            if (topLevel instanceof FunctionDeclaration){
+                Sequence hej = new Sequence(null);
+                topLevel.body = hej;
+            }
             if (!r_checker.check(topLevel)) {
                 System.out.print("shit is working");
             }

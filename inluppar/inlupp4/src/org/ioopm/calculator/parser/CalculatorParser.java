@@ -32,6 +32,7 @@ public class CalculatorParser {
     private static char GREATERTHAN = '>';
     private static char LESSTHAN = '<';
     private static String EQ = "==";
+    private static String FUNCTION = "function";
 
     // unallowerdVars is used to check if variabel name that we
     // want to assign new meaning to is a valid name eg 3 = Quit
@@ -277,9 +278,11 @@ public class CalculatorParser {
                 st.sval.equals(NEG) ||
                 st.sval.equals(IF) ||
                 st.sval.equals(LOG)) {
-
                 result = unary();
-            } else {
+            } else if (st.sval.equals(FUNCTION)){
+                result = functionMode();
+            } 
+            else{
                 result = identifier();
             }
         } else {
@@ -341,5 +344,39 @@ public class CalculatorParser {
         } else {
             throw new SyntaxErrorException("Error: Expected number");
         }
+    }
+
+    private SymbolicExpression functionMode() throws IOException{
+        String name;
+        ArrayList<Variable> parameters = new ArrayList<>();
+        this.st.nextToken();
+        if (this.st.ttype == this.st.TT_WORD){
+            name = this.st.sval;
+        }
+            else{
+            throw new SyntaxErrorException("Expected name");
+        }
+        this.st.nextToken();
+        if (!(this.st.ttype == '(')){
+            throw new SyntaxErrorException("Expected '('");
+        }
+        while (true) {
+            this.st.nextToken();
+            if (this.st.ttype == this.st.TT_WORD){
+                Variable temp = new Variable(this.st.sval);
+                if (parameters.contains(temp)){
+                 throw new SyntaxErrorException("Parameter aldready used");
+                }
+                parameters.add(temp);
+            }
+            //this.st.pushBack();
+            //this.st.nextToken();
+            else if (this.st.ttype == ')'){
+                break;
+            }else if (!(this.st.ttype == ',')){
+                throw new SyntaxErrorException("Wrong syntax");
+            }
+        }
+        return new FunctionDeclaration();
     }
 }
