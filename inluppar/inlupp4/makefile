@@ -15,3 +15,9 @@ run: all
 
 clean:
 	rm -rf classes
+
+test:
+	javac -cp junit-platform-console-standalone-1.8.1.jar:classes src/org/ioopm/calculator/AdditionTest.java
+
+runTest: test
+	java -jar junit-platform-console-standalone-1.8.1.jar -cp . -c org.ioopm.calculator/AdditionTest
