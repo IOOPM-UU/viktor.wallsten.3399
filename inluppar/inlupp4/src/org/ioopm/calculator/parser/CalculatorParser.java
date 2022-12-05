@@ -9,6 +9,8 @@ import java.io.IOException;
 
 import java.util.*;
 
+import javax.sound.sampled.AudioFileFormat;
+
 /**
  * Represents the parsing of strings into valid expressions defined in the AST.
  */
@@ -33,6 +35,8 @@ public class CalculatorParser {
     private static char LESSTHAN = '<';
     private static String EQ = "==";
     private static String FUNCTION = "function";
+    public Boolean funcMode = false;
+    public HashMap<String, FunctionDeclaration> functions = new HashMap<>(); 
 
     // unallowerdVars is used to check if variabel name that we
     // want to assign new meaning to is a valid name eg 3 = Quit
@@ -45,7 +49,8 @@ public class CalculatorParser {
         "Log",
         "Clear",
         "if",
-        "else"));
+        "else",
+        "function"));
 
     /**
      * Used to parse the inputted string by the Calculator program
@@ -71,6 +76,7 @@ public class CalculatorParser {
      * @throws SyntaxErrorException if the token parsed cannot be turned into a valid expression
      */
     private SymbolicExpression statement() throws IOException {
+        System.out.println(functions);
         SymbolicExpression result;
         this.st.nextToken(); //kollar pÃ¥ nÃ¤sta token som ligger pÃ¥ strÃ¶mmen
         if (this.st.ttype == this.st.TT_EOF) {
@@ -271,6 +277,9 @@ public class CalculatorParser {
             }
         } else if (this.st.ttype == NEGATION) {
             result = unary();
+        } else if(functions.containsKey(this.st.sval))
+        {
+            result = functionCall();
         } else if (this.st.ttype == this.st.TT_WORD) {
             if (st.sval.equals(SIN) ||
                 st.sval.equals(COS) ||
@@ -369,14 +378,45 @@ public class CalculatorParser {
                 }
                 parameters.add(temp);
             }
-            //this.st.pushBack();
-            //this.st.nextToken();
             else if (this.st.ttype == ')'){
                 break;
             }else if (!(this.st.ttype == ',')){
-                throw new SyntaxErrorException("Wrong syntax");
+                throw new SyntaxErrorException("Wrong syntax1");
             }
         }
-        return new FunctionDeclaration();
+        this.funcMode = true;
+        return new FunctionDeclaration(name, parameters, new Sequence());
     }
+
+
+    private SymbolicExpression functionCall() throws IOException{
+        String name = this.st.sval;
+        ArrayList<Constant> argumnets = new ArrayList<>();
+        this.st.nextToken();
+        if (!(this.st.ttype == '(')){
+            throw new SyntaxErrorException("Expected '('");
+        }
+        while (true) {
+            this.st.nextToken();
+            if (this.st.ttype == this.st.TT_NUMBER){
+                Constant temp = new Constant(this.st.nval);
+                if (argumnets.contains(temp)){
+                 throw new SyntaxErrorException("Parameter aldready used");
+                }
+                argumnets.add(temp);
+            }
+            else if (this.st.ttype == ')'){
+                break;
+            }else if (!(this.st.ttype == ',')){
+                throw new SyntaxErrorException("Wrong syntax2");
+            }
+        }
+
+        if (argumnets.size() != this.functions.get(name).body.size()){
+            throw new SyntaxErrorException("Mismatch with number of argumnets");
+        }
+
+        return new Scope(new FunctionCall(name, argumnets, this.functions.get(name)));
+    }
+
 }

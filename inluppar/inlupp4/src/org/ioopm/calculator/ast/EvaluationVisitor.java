@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Function;
 import java.util.Stack;
 
 public class EvaluationVisitor implements Visitor {
@@ -223,6 +224,13 @@ public class EvaluationVisitor implements Visitor {
     }
 
     public SymbolicExpression visit(SysBool n){
+        return n;
+    }
+
+    public SymbolicExpression visit(FunctionDeclaration n){
+        return n;
+    }
+    public SymbolicExpression visit(FunctionCall n){
         return n;
     }
 }

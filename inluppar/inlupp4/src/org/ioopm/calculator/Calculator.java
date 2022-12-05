@@ -2,11 +2,13 @@ package org.ioopm.calculator;
 
 import org.ioopm.calculator.ast.*;
 import org.ioopm.calculator.parser.*;
+import java.util.HashMap;
 
 
 public class Calculator {
 
 public static void main(String[] args) {
+
 
     Boolean eventloop = true;
 
@@ -25,19 +27,44 @@ public static void main(String[] args) {
         System.out.println("Please enter an expression");
         try{
             String input = System.console().readLine();
-            final SymbolicExpression topLevel = p.parse(input, e); 
+            final SymbolicExpression topLevel = p.parse(input, e);     
 
-            if (!checker.check(topLevel)) {
-                
+            if (p.funcMode){
+                try {
+                    FunctionDeclaration tempfunc = (FunctionDeclaration) topLevel;
+                    while (true){
+                        try{
+                            System.out.println("Please enter a function body");
+                            String funcInput = System.console().readLine();
+                            final SymbolicExpression funcLevel = p.parse(funcInput, e); 
+                            if (funcInput.equals("end") || funcInput.equals("End")){
+                                if (tempfunc.body.isEmpty()){
+                                    System.out.println("sequence är tom, ingen funktion har skapats");
+                                    p.funcMode = false;
+                                    break;
+                                }
+                                p.funcMode = false;
+                                p.functions.put(tempfunc.name, tempfunc);
+                                break;
+                            }
+                            
+                            tempfunc.body.add(funcLevel);
+                        }
+                        catch (Exception ex){
+                            System.out.println(ex.toString());
+                        }
+                    }
+                } catch (Exception ex){
+                    System.out.println(ex.toString());
+                }
             }
-            if (topLevel instanceof FunctionDeclaration){
-                Sequence hej = new Sequence(null);
-                topLevel.body = hej;
+
+            if (!checker.check(topLevel)) {    
             }
+         
             if (!r_checker.check(topLevel)) {
                 System.out.print("shit is working");
             }
-
             else{
                 final SymbolicExpression result = evaluator.evaluate(topLevel, e);
                 enteredExpressions++;
@@ -61,6 +88,7 @@ public static void main(String[] args) {
                     }
                 }
                 else{
+
                     SymbolicExpression awnser = evaluator.evaluate(result, e);
                     System.out.println(awnser);
                     evaluatedExpressions++;

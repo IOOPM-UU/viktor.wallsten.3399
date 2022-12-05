@@ -24,4 +24,7 @@ public interface Visitor {
     public SymbolicExpression visit (Eq n);
     public SymbolicExpression visit (Conditonal n);
     public SymbolicExpression visit (SysBool n);
+    public SymbolicExpression visit (Sequence n);
+    public SymbolicExpression visit (FunctionDeclaration n);
+    public SymbolicExpression visit (FunctionCall n);
 }

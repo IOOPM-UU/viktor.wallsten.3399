@@ -131,4 +131,14 @@ public class NamedConstantChecker implements Visitor {
     public SymbolicExpression visit(SysBool n){
         return n;
     }
+    public SymbolicExpression visit(FunctionDeclaration n){
+        return n;
+    }
+
+    public SymbolicExpression visit(FunctionCall n){
+        return n;
+    }
+    public SymbolicExpression visit(Sequence n){
+        return n;
+    }
 }
