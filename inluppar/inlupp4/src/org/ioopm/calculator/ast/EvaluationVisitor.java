@@ -227,11 +227,30 @@ public class EvaluationVisitor implements Visitor {
         return n;
     }
 
+    public SymbolicExpression visit(Sequence n){
+        SymbolicExpression result = null;
+
+        for (SymbolicExpression r : n.list) {
+            result = r.accept(this);
+        }
+ 
+        return result;
+    }
+
     public SymbolicExpression visit(FunctionDeclaration n){
         return n;
     }
+
+
     public SymbolicExpression visit(FunctionCall n){
-        return n;
+        for (int i = 0; i < n.list.size(); i++){
+            env.put(n.funcDec.parameters.get(i), n.list.get(i).accept(this));
+        }
+        SymbolicExpression result = n.funcDec.body.accept(this);  
+        return result;
+       
     }
+
+
 }
     

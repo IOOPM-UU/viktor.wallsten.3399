@@ -9,8 +9,6 @@ import java.io.IOException;
 
 import java.util.*;
 
-import javax.sound.sampled.AudioFileFormat;
-
 /**
  * Represents the parsing of strings into valid expressions defined in the AST.
  */
@@ -76,7 +74,6 @@ public class CalculatorParser {
      * @throws SyntaxErrorException if the token parsed cannot be turned into a valid expression
      */
     private SymbolicExpression statement() throws IOException {
-        System.out.println(functions);
         SymbolicExpression result;
         this.st.nextToken(); //kollar pÃ¥ nÃ¤sta token som ligger pÃ¥ strÃ¶mmen
         if (this.st.ttype == this.st.TT_EOF) {
@@ -277,10 +274,11 @@ public class CalculatorParser {
             }
         } else if (this.st.ttype == NEGATION) {
             result = unary();
-        } else if(functions.containsKey(this.st.sval))
-        {
+        } else if(functions.containsKey(this.st.sval)){
             result = functionCall();
-        } else if (this.st.ttype == this.st.TT_WORD) {
+        
+        }
+        else if (this.st.ttype == this.st.TT_WORD) {
             if (st.sval.equals(SIN) ||
                 st.sval.equals(COS) ||
                 st.sval.equals(EXP) ||
@@ -385,13 +383,15 @@ public class CalculatorParser {
             }
         }
         this.funcMode = true;
-        return new FunctionDeclaration(name, parameters, new Sequence());
+        FunctionDeclaration tempfunc = new FunctionDeclaration(name, parameters, new Sequence()); 
+        this.functions.put(name, tempfunc);
+        // return new FunctionDeclaration(name, parameters, new Sequence());
+        return tempfunc;
     }
-
 
     private SymbolicExpression functionCall() throws IOException{
         String name = this.st.sval;
-        ArrayList<Constant> argumnets = new ArrayList<>();
+        ArrayList<SymbolicExpression> argumnets = new ArrayList<>();
         this.st.nextToken();
         if (!(this.st.ttype == '(')){
             throw new SyntaxErrorException("Expected '('");
@@ -399,10 +399,11 @@ public class CalculatorParser {
         while (true) {
             this.st.nextToken();
             if (this.st.ttype == this.st.TT_NUMBER){
-                Constant temp = new Constant(this.st.nval);
-                if (argumnets.contains(temp)){
-                 throw new SyntaxErrorException("Parameter aldready used");
-                }
+                SymbolicExpression temp = new Constant(this.st.nval);
+                argumnets.add(temp);
+            }
+            else if (this.st.ttype == this.st.TT_WORD){
+                SymbolicExpression temp = new Variable(this.st.sval);
                 argumnets.add(temp);
             }
             else if (this.st.ttype == ')'){
@@ -412,7 +413,7 @@ public class CalculatorParser {
             }
         }
 
-        if (argumnets.size() != this.functions.get(name).body.size()){
+        if (argumnets.size() != this.functions.get(name).parameters.size()){
             throw new SyntaxErrorException("Mismatch with number of argumnets");
         }
 

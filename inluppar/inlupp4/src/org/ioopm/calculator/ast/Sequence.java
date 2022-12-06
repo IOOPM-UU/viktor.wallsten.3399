@@ -2,8 +2,8 @@ package org.ioopm.calculator.ast;
 
 import java.util.ArrayList;
 
-public class Sequence extends ArrayList<SymbolicExpression>{
-//    private ArrayList<SymbolicExpression> list;
+public class Sequence extends SymbolicExpression{
+   public ArrayList<SymbolicExpression> list = new ArrayList<>();
 
     // public Sequence(){
     //     this.list = new ArrayList<SymbolicExpression>();
@@ -11,7 +11,6 @@ public class Sequence extends ArrayList<SymbolicExpression>{
 
     // @Override
     public SymbolicExpression accept(Visitor v) {
-        // TODO Auto-generated method stub
         return v.visit(this);
     }
 
@@ -19,7 +18,7 @@ public class Sequence extends ArrayList<SymbolicExpression>{
    @Override
     public String toString(){
         String temp = "";
-        for (SymbolicExpression r : this) {
+        for (SymbolicExpression r : this.list) {
             temp += r + "\n";
         }
         return temp;

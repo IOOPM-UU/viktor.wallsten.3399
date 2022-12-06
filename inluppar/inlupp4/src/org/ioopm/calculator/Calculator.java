@@ -38,17 +38,18 @@ public static void main(String[] args) {
                             String funcInput = System.console().readLine();
                             final SymbolicExpression funcLevel = p.parse(funcInput, e); 
                             if (funcInput.equals("end") || funcInput.equals("End")){
-                                if (tempfunc.body.isEmpty()){
+                                if (tempfunc.body.list.isEmpty()){
                                     System.out.println("sequence är tom, ingen funktion har skapats");
                                     p.funcMode = false;
                                     break;
                                 }
                                 p.funcMode = false;
                                 p.functions.put(tempfunc.name, tempfunc);
+                                
                                 break;
                             }
-                            
-                            tempfunc.body.add(funcLevel);
+                           
+                            tempfunc.body.list.add(funcLevel);
                         }
                         catch (Exception ex){
                             System.out.println(ex.toString());
