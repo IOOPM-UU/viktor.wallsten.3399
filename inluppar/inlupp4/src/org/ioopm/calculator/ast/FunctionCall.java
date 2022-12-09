@@ -1,5 +1,9 @@
 package org.ioopm.calculator.ast;
 
+<<<<<<< HEAD
+public class FunctionCall {
+    
+=======
 import java.util.ArrayList;
 
 public class FunctionCall extends SymbolicExpression {
@@ -20,4 +24,5 @@ public class FunctionCall extends SymbolicExpression {
         // TODO Auto-generated method stub
         return v.visit(this);
     }
+>>>>>>> 82d63ad6a7feb43e2cf38c132a031c5ef400fc9c
 }

@@ -1,5 +1,9 @@
 package org.ioopm.calculator.ast;
 
+<<<<<<< HEAD
+public class Sequence {
+    
+=======
 import java.util.ArrayList;
 
 public class Sequence extends SymbolicExpression{
@@ -24,4 +28,5 @@ public class Sequence extends SymbolicExpression{
         return temp;
     }
 
+>>>>>>> 82d63ad6a7feb43e2cf38c132a031c5ef400fc9c
 }

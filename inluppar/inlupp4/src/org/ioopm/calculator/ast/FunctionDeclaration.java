@@ -1,5 +1,9 @@
 package org.ioopm.calculator.ast;
 
+<<<<<<< HEAD
+public class FunctionDeclaration {
+    
+=======
 import java.util.ArrayList;
 
 public class FunctionDeclaration extends SymbolicExpression {
@@ -31,4 +35,5 @@ public class FunctionDeclaration extends SymbolicExpression {
         return "\n" + this.name.toString() + this.parameters.toString() + "\n" + this.body.toString();
     }
 
+>>>>>>> 82d63ad6a7feb43e2cf38c132a031c5ef400fc9c
 }
