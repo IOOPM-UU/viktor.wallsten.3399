@@ -36,9 +36,10 @@ public class Variable extends Atom implements Comparable{
         return this.c.toString().hashCode();
     }
 
-    public boolean isCommand(){
-        return true;
-    }
+    // @Override
+    // public boolean isCommand(){
+    //     return true;
+    // }
 
     public String getName(){
         return this.toString();

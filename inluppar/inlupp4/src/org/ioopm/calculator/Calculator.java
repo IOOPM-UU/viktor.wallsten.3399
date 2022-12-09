@@ -60,11 +60,12 @@ public static void main(String[] args) {
                 }
             }
 
-            if (!checker.check(topLevel)) {    
+            if (!checker.check(topLevel)) {
+                throw new IllegalExpressionException("Cant reassign a named constant");
             }
          
             if (!r_checker.check(topLevel)) {
-                System.out.print("shit is working");
+                throw new IllegalExpressionException("Cannot reassign a variable twice");
             }
             else{
                 final SymbolicExpression result = evaluator.evaluate(topLevel, e);

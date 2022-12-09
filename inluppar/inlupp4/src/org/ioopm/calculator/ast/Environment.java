@@ -1,8 +1,6 @@
 package org.ioopm.calculator.ast;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.Stack;
 
@@ -13,17 +11,6 @@ public class Environment extends Stack<HashMap<Variable, SymbolicExpression>> {
         HashMap<Variable, SymbolicExpression> hash = new HashMap<Variable, SymbolicExpression>();
         this.stack.push(hash);
     }
-    /* 
-    public void print() {
-        Set<Variable> keys = this.keySet();
-
-        for (Variable v : keys){
-            String key = v.toString();
-            String value = this.get(v).toString();
-            System.out.println(key  + " = " + value);
-        }
-    }
-    */
 
     @Override
     public String toString(){
@@ -43,8 +30,6 @@ public class Environment extends Stack<HashMap<Variable, SymbolicExpression>> {
 
     public SymbolicExpression get(Variable v){
         Stack<HashMap<Variable, SymbolicExpression>> temp_stack = (Stack<HashMap<Variable, SymbolicExpression>>) this.stack.clone();
-        //HashMap<Variable, SymbolicExpression> temp = temp_stack.pop();    
-        //return temp.get(v);
         for(int i = 0; i < this.stack.size(); i++){
             HashMap<Variable, SymbolicExpression> temp_ht = temp_stack.pop();    
             if(temp_ht.containsKey(v)){
@@ -63,12 +48,9 @@ public class Environment extends Stack<HashMap<Variable, SymbolicExpression>> {
 
     public Boolean containsKey(SymbolicExpression key){
         Stack<HashMap<Variable, SymbolicExpression>> temp_stack = (Stack<HashMap<Variable, SymbolicExpression>>) this.stack.clone();
-        //HashMap<Variable, SymbolicExpression> temp_ht = temp_stack.pop();    
-        //return temp_ht.containsKey(key);
         for(int i = 0; i < this.stack.size(); i++){
             HashMap<Variable, SymbolicExpression> temp_ht = temp_stack.pop();    
             if(temp_ht.containsKey(key)){
-                //temp_stack.push(temp_ht);
                 return true;
             }
         }

@@ -8,7 +8,7 @@ public class Assignment extends Binary{
     }
 
     public String getName() {
-        return "=";
+        return rhs.toString() + " = " + lhs.toString();
     }
 
     public String toString(){

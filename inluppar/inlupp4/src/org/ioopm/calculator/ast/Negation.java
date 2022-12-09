@@ -14,6 +14,10 @@ public class Negation extends Unary{
         return super.toString();
     }
 
+    public boolean equals(Object other) {
+        return super.equals(other);
+    }
+
     @Override
     public SymbolicExpression accept(Visitor v) {
     return v.visit(this);
